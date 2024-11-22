@@ -8,4 +8,4 @@ int y;
 ciao tt;
 int x;
 
-x+y;
+tt.n;

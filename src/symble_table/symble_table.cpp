@@ -57,19 +57,71 @@ public:
         return ENUM_TIPO_VARIABILE::NONE_VAR;
     }
 
-    void 
+    [[nodiscard]] ENUM_TIPO_VARIABILE check_if_node_is_equal( const ENUM_TIPO_VARIABILE first,const string* key) const {
+        auto temp_actual_node= this->actual_node;
+        while (temp_actual_node!=nullptr) {
+            if (temp_actual_node->map.contains(*key)) {
+                if (temp_actual_node->map[*key]->get_tipo()==first) {
+                    return first;
+                }
+            }
+            temp_actual_node = temp_actual_node->up_layer;
+        }
+        //TODO errore tipo non corrispondente
+        return ENUM_TIPO_VARIABILE::NONE_VAR;
+    }
+
+
+    //gesu cristo,chi me l ha fatto fatto fare
+    // per il futuro me, ricordati di non avere ste idee di merda!!!
+    // chi cazzo me l ha fatta fare
+
+
+    [[nodiscard]]bool exist_propriety_of_a_class(const string* object_key, const string* propriety_key) const {
+        //TODO: // implementare errore se la classe non resist
+        SymbleTable_Row* object = this->actual_node->get(object_key);
+        if (object== nullptr) {
+            // oggetto non dichiarato
+            cout<<"ERRORE: OGGETTO NON ESISTENTE"<<endl;
+            exit(0);
+
+        }
+        if (object->get_info()!=ENUM_INFO::CLASSE) {
+            // oggetto non è una classe
+            cout << "ERRORE: OGGETTO NON E UNA CLASSE" << endl;
+            exit(0);
+        }
+
+        if (NODE* class_node = object->get_oggetto_puntato(); class_node->map.contains(*propriety_key)) {
+            return true;
+        }else {
+            cout << "ERRORE: PROPRIETA' NON ESISTENTE" << endl;
+            exit(0);
+        }
+
+    }
 
 
 
 
-    /**
-     * @brief Constructs a new SymbleTable_Core object.
-     *
-     * Initializes the root node and sets the current node to the root.
-     */
+    [[nodiscard]] ENUM_TIPO_VARIABILE get_tipo_variabile(const string* key) const {
+        auto temp_actual_node = this->actual_node;
+        while (temp_actual_node!=nullptr) {
+            if (temp_actual_node->map.contains(*key)) {
+                return temp_actual_node->map[*key]->get_tipo();
+            }
+            temp_actual_node = temp_actual_node->up_layer;
+        }
+        //TODO errore variabile non esistente
+        return ENUM_TIPO_VARIABILE::NONE_VAR;
+    }
+
+
     SymbleTable_Core() {
         this->root = new NODE(nullptr);
         this->actual_node = this->root;
+
+
     }
 
     /**
@@ -116,7 +168,7 @@ public:
     /**
      *@details funione di debug per la visione della symble table
      */
-    void print() {
+    void print() const{
         this->root->print("    ");
     }
 

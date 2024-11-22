@@ -1137,6 +1137,31 @@ public:
     }
 };
 
+class propriety: public Entity {
+public:
+
+    short type= syntax_analyzer::PROPRIETY;
+
+    short getCategory() {
+        return category_syntax_analyzer::_real;
+    }
+    Entity* object;
+    Entity* prorieta;
+
+
+    short getType() const { return type; }
+
+    propriety(Entity* object, Entity* prorieta ){
+        this->prorieta=prorieta;
+        this->object=object;
+        if(CORE_SYMBLETABLE->exist_propriety_of_a_class(prorieta->get_name(), object->get_name())) {
+            return;
+        }
+        return;
+    }
+
+};
+
 class real_paramether_list : public Entity {
 public:
     short type;
@@ -1176,32 +1201,37 @@ public:
 };
 
 class math_expression : public Entity {
-private:
-
 public:
     short type;
 
-    short getCategory() {
+    short getCategory() override {
         return category_syntax_analyzer::_real;
     }
 
     deque<Entity *> EXPRESSION = deque<Entity *>();
     ENUM_TIPO_VARIABILE tipo_operazione;
-    short getType() const { return type; }
+    [[nodiscard]] short getType() const override { return type; }
+    ENUM_TIPO_VARIABILE get_tipo_operazione() override { return tipo_operazione; }
 
     math_expression(Entity *first, Entity *operand, Entity *second) {
-        this->type = syntax_analyzer::MATH_EXPRESSION;
-        this->EXPRESSION.push_back(first);
-        this->EXPRESSION.push_back(second);
-        this->EXPRESSION.push_back(operand);
         this->tipo_operazione= CORE_SYMBLETABLE->check_if_two_node_are_equal_type(first->get_name(), second->get_name());
         if(tipo_operazione==ENUM_TIPO_VARIABILE::NONE_VAR) {
             cout<<"ERRORE: TIPO NON COMPATIBILE"<<endl;
             exit(0);
         }
+        this->type = syntax_analyzer::MATH_EXPRESSION;
+        this->EXPRESSION.push_back(first);
+        this->EXPRESSION.push_back(second);
+        this->EXPRESSION.push_back(operand);
+
     }
 
-    math_expression(Entity *first, Entity *operand, deque<Entity *> *second) {
+    math_expression(Entity *first, Entity *operand, deque<Entity *> *second, const ENUM_TIPO_VARIABILE tipo_second) {
+        this->tipo_operazione=CORE_SYMBLETABLE->check_if_node_is_equal(tipo_second, first->get_name());
+        if(tipo_operazione==ENUM_TIPO_VARIABILE::NONE_VAR) {
+            cout<<"ERRORE: TIPO NON COMPATIBILE"<<endl;
+            exit(0);
+        }
         this->type = syntax_analyzer::MATH_EXPRESSION;
         this->EXPRESSION.push_back(first);
         this->EXPRESSION.insert(this->EXPRESSION.end(), second->begin(), second->end());
@@ -1210,12 +1240,20 @@ public:
     }
 
 
-    void add(deque<Entity *> *second, Entity *operand) {
+    void add(deque<Entity *> *second, ENUM_TIPO_VARIABILE tipo, Entity *operand) override{
+        if (this->tipo_operazione != tipo) {
+            cout << "ERRORE: TIPO NON COMPATIBILE" << endl;
+            exit(0);
+        }
         this->EXPRESSION.insert(this->EXPRESSION.end(), second->begin(), second->end());
         this->EXPRESSION.push_back(operand);
     };
 
-    void add(Entity *second, Entity *operand) {
+    void add(Entity *second, Entity *operand) override {
+        if (this->tipo_operazione != CORE_SYMBLETABLE->get_tipo_variabile(second->get_name())) {
+            cout << "ERRORE: TIPO NON COMPATIBILE" << endl;
+            exit(0);
+        }
         this->EXPRESSION.push_back(second);
         this->EXPRESSION.push_back(operand);
     };

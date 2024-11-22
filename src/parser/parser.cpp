@@ -149,8 +149,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     }
 
     //* formal_list + comma + declaration
-    if (first->getType() == syntax_analyzer::SEQUENCE_OF_ALLOCATION and third->getCategory() ==
-        category_syntax_analyzer::_allocation and second->getType() == syntax_analyzer::COMMA) {
+    if (first->getType() == syntax_analyzer::SEQUENCE_OF_ALLOCATION and third->getCategory() ==category_syntax_analyzer::_allocation and second->getType() == syntax_analyzer::COMMA) {
         first->add(third);
         BUFFER->pop_back();
         BUFFER->pop_back();
@@ -158,8 +157,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     }
 
     //* real_list + comma + real_var
-    if (first->getType() == syntax_analyzer::SEQUENCE_OF_ENTITY and third->getCategory() ==
-        category_syntax_analyzer::_real and second->getType() == syntax_analyzer::COMMA) {
+    if (first->getType() == syntax_analyzer::SEQUENCE_OF_ENTITY and third->getCategory() ==category_syntax_analyzer::_real and second->getType() == syntax_analyzer::COMMA) {
         first->add(third);
         BUFFER->pop_back();
         BUFFER->pop_back();
@@ -263,7 +261,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         print("entrato in mate");
         if (first->getType() == syntax_analyzer::MATH_EXPRESSION) {
             if (third->getType() == syntax_analyzer::MATH_EXPRESSION) {
-                first->add(third->get_deque(), second);
+                first->add(third->get_deque(), third->get_tipo_operazione(), second);
                 BUFFER->pop_back();
                 BUFFER->pop_back();
                 return;
@@ -283,7 +281,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
                 print("cucu");
                 third->get_deque();
                 print("cucu2");
-                Entity *ENTITY = new math_expression(first, second, third->get_deque());
+                Entity *ENTITY = new math_expression(first, second, third->get_deque(), third->get_tipo_operazione());
                 BUFFER->pop_back();
                 BUFFER->pop_back();
                 BUFFER->pop_back();
@@ -419,6 +417,15 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
     if (second->getType() == syntax_analyzer::ASSIGN_OPERAND) {
         Entity *ENTITY = new assign_expression(first, second);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
+    if (first->getType()== syntax_analyzer::VAR and second->getType()==syntax_analyzer::DOT and third->getCategory()==syntax_analyzer::VAR){
+        Entity* ENTITY = new propriety(first, third);
         BUFFER->pop_back();
         BUFFER->pop_back();
         BUFFER->pop_back();

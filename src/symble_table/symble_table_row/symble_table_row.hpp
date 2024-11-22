@@ -91,6 +91,8 @@ public:
         return 0;
     }
 
+
+
     /**
      * @brief Inserts a new key-value pair into the node.
      * @param key Pointer to the key string.
@@ -110,7 +112,17 @@ public:
      * @return Pointer to the SymbleTable_Row object.
      */
     SymbleTable_Row* get(const std::string* key) {
-        return map[*key];
+        if (map.contains(*key)) {
+            return map[*key];
+        }else {
+            if (this->get_up_layer()==nullptr) {
+                return nullptr;
+            }else {
+                return this->get_up_layer()->get(key);
+            }
+        }
+
+
     }
 
     /**

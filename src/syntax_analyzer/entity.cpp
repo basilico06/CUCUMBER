@@ -69,16 +69,17 @@ public:
     /**
      * @brief Adds an entity to a deque of entities.
      * @param second Pointer to the deque of entities.
+     * @param tipo The type of the variable.
      * @param operand Pointer to the entity to be added.
      */
-    virtual void add(deque<Entity*>* second, Entity* operand) { return; }
+    virtual void add(deque<Entity*>* second, ENUM_TIPO_VARIABILE tipo, Entity* operand) {return ; }
 
     /**
      * @brief Adds an entity to another entity.
      * @param second Pointer to the second entity.
      * @param operand Pointer to the entity to be added.
      */
-    virtual void add(Entity* second, Entity* operand) { return; }
+    virtual void add(Entity* second, Entity* operand) { }
 
     virtual ENUM_TIPO_VARIABILE get_tipo_operazione() { return ENUM_TIPO_VARIABILE::NONE_VAR;} ///< The type of the variable.
 };

@@ -9,28 +9,28 @@
 
 
 class util_syntax_analyzer{
-    public:
+public:
 
-    static const short max_id_operand=490;
+    static constexpr short max_id_operand=490;
     static const short max_id_parentesis=500;
-
     static const short first_id_allocation=800;
+
 };
 
 class category_syntax_analyzer{
 public:
+
     static const short _real=1;
     static const short _allocation=2;
     static const short _default=3;
     static const short _math_symbol=4;
 
-
 };
 
 
 class syntax_analyzer {
-
     public:
+
         static const short DOT = 450;
         static const short POW = 451;
         static const short MUL_DIV = 452;
@@ -56,6 +56,7 @@ class syntax_analyzer {
         static const short SIMPLE_CONDITION = 518;
         static const short BOOLEAN_VAR = 519;
         static const short ARRAY_CALL = 520;
+        static const short PROPRIETY = 521;
 
         static const short DATATYPE = 526;
         static const short INT_MODIFIER_OPERAND = 527;
