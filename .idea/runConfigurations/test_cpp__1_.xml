@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test.cpp (1)" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" folderName="New Folder" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="starfish_programming_language" TARGET_NAME="parser.cpp - MinGW" CONFIG_NAME="test.cpp (1)">
+    <option name="compilerFile" value="C:\MinGW\bin\g++.exe" />
+    <option name="sourceFile" value="src\parser\parser.cpp" />
+    <option name="toolchainName" value="MinGW" />
+    <method v="2">
+      <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

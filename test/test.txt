@@ -1,0 +1,11 @@
+class ciao {
+    int c;
+    bool v;
+    float f
+};
+
+int y;
+ciao tt;
+int x;
+
+x+y;

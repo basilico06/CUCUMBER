@@ -1,0 +1,6 @@
+# ninja log v6
+4	1462	7536226124055456	CMakeFiles/starfish_programming_language.dir/main.cpp.obj	b83d956817193d3f
+1467	2397	7536226138681928	starfish_programming_language.exe	a9263c3ca190e5a1
+235	10202	7539202898558679	CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj	687665e7bd04a4ad
+126	10215	7539202897476602	CMakeFiles/starfish_programming_language.dir/main.cpp.obj	b83d956817193d3f
+51	10521	7539203325434418	CMakeFiles/starfish_programming_language.dir/main.cpp.obj	b83d956817193d3f
