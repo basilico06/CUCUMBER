@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="afb806d0-200c-46a0-9841-13dd47821311" name="deploy 1" url="http://localhost">
+        <fileTransfer mountedRoot="C:\Users\basil\OneDrive\Desktop\deploy1" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
