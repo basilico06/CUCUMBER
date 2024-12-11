@@ -27,6 +27,14 @@ void parse_2_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     auto first = *safe_next(start, *BUFFER);
     auto second = *safe_next(start, *BUFFER, 2);
 
+    if(first->getType()==syntax_analyzer::RETURN_DECLARATION and second->getCategory()==category_syntax_analyzer::_real) {
+        Entity *entity = new return_statement(second);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(entity);
+        goto end_parser_2;
+    }
+
     if (first->getType() == syntax_analyzer::VAR and second->getType() == syntax_analyzer::REAL_PARAMETHER_LIST) {
         Entity *entity = new function_call(first, second);
         BUFFER->pop_back();
@@ -111,6 +119,34 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     std::cout << "Third entity: ";
     print_entity_debug(third);
 
+    if (first->getType()== syntax_analyzer::VAR and second->getType()==syntax_analyzer::DOT and third->getType()==syntax_analyzer::VAR){
+
+        Entity* ENTITY = new propriety(first, third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
+    if (first->getType()== syntax_analyzer::ARRAY_CALL and second->getType()==syntax_analyzer::DOT and third->getType()==syntax_analyzer::VAR){
+
+        Entity* ENTITY = new propriety(first, third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
+    if (first->getType()== syntax_analyzer::PROPRIETY and second->getType()==syntax_analyzer::DOT and third->getType()==syntax_analyzer::VAR){
+        Entity* ENTITY = new propriety(first, third, 1);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
 
     //* real_var + comma + real_var
     if (first->getCategory() == category_syntax_analyzer::_real and third->getCategory() ==
@@ -162,6 +198,26 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         BUFFER->pop_back();
         BUFFER->pop_back();
         return;
+    }
+
+    if (first->getType() == syntax_analyzer::LEFT_SQUARE and third->getType() == syntax_analyzer::RIGHT_SQUARE) {
+        cout<<"hello"<<endl;
+        if ((*start)->getCategory()==category_syntax_analyzer::_real) {
+            cout<<"t1"<<endl;
+            if (second->getType() >= 500 and second->getType() < 525) {
+                Entity *temp = new array_position(second);
+                cout<<"t2"<<endl;
+                Entity *ENTITY = new array_call(*start, temp);
+                cout<<"t_post"<<endl;
+                BUFFER->pop_back();
+                BUFFER->pop_back();
+                BUFFER->pop_back();
+                BUFFER->pop_back();
+                BUFFER->push_back(ENTITY);
+                return;
+            }
+            //*TODO IMPLEMENTARE ERRORI
+        }
     }
 
     if (first->getType() == syntax_analyzer::LEFT_PAREN and third->getType() == syntax_analyzer::RIGHT_PAREN) {
@@ -309,25 +365,21 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         print("come mai non fai un cazzo?");
     }
 
+    //array_declaration
+
+    if(first->getType()==syntax_analyzer::ARRAY_DEC and second->getType()==syntax_analyzer::DATATYPE and third->getType()==syntax_analyzer::VAR) {
+        Entity* TEMP= new array_declaration(second, third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(TEMP);
+        return;
+    }
 
     //ARRAY CALL
-    if (first->getType() == syntax_analyzer::LEFT_SQUARE and third->getType() == syntax_analyzer::RIGHT_SQUARE) {
-        if ((*start)->getType() == syntax_analyzer::VAR) {
-            if (second->getType() >= 500 and second->getType() < 518) {
-                Entity *temp = new array_position(second);
-                Entity *ENTITY = new array_call((*start), temp);
-                BUFFER->pop_back();
-                BUFFER->pop_back();
-                BUFFER->pop_back();
-                BUFFER->pop_back();
-                BUFFER->push_back(ENTITY);
-                return;
-            }
-            //*TODO IMPLEMENTARE ERRORI
-        }
 
-        //*TODO IMPLEMENTARE ERRORI
-    }
+
+
 
     //LIST OF ISTRUCTION
     if (second->getType() == syntax_analyzer::SEMICOLON) {
@@ -390,6 +442,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
 
         if (first->getType() == syntax_analyzer::IF_DECLARATION) {
+
             if (second->getType() == syntax_analyzer::SIMPLE_CONDITION) {
                 Entity *ENTITY = new if_statment(second, third);
                 BUFFER->pop_back();
@@ -416,7 +469,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     }
 
     if (second->getType() == syntax_analyzer::ASSIGN_OPERAND) {
-        Entity *ENTITY = new assign_expression(first, second);
+        Entity *ENTITY = new assign_expression(first, third);
         BUFFER->pop_back();
         BUFFER->pop_back();
         BUFFER->pop_back();
@@ -424,19 +477,29 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         return;
     }
 
-    if (first->getType()== syntax_analyzer::VAR and second->getType()==syntax_analyzer::DOT and third->getCategory()==syntax_analyzer::VAR){
-        Entity* ENTITY = new propriety(first, third);
-        BUFFER->pop_back();
-        BUFFER->pop_back();
-        BUFFER->pop_back();
-        BUFFER->push_back(ENTITY);
-        return;
-    }
+
 
     cout << "errore nel parser: non presente compatibilita" << endl;
 }
 
 void parse_default(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
+    auto first = next(start);
+    auto second = next(first);
+    auto third = next(second);
+    auto fourth = next(third);
+
+
+    //todo IMPORTANT COMPLETARE TUTTI I CASI
+    if ((*first)->getType()==syntax_analyzer::FUNCTION_DEC and (*second)->getType()==syntax_analyzer::VAR and (*third)->getType()==syntax_analyzer::FORMAL_PARAMETHER_LIST and (*fourth)->getType()==syntax_analyzer::BLOCK){
+        Entity* ENTITY = new function_declaration((*second), (*third));
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
 }
 
 
@@ -456,11 +519,14 @@ void parser_core(list<Entity *>::iterator it_start, list<Entity *> *BUFFER) {
             return;
             break;
         case 2:
+            cout<<"2 entita"<< endl;
             parse_2_entity(it_start, BUFFER);
             break;
         case 3:
             parse_3_entity(it_start, BUFFER);
             break;
+        case 4:
+            parse_default(it_start, BUFFER);
         default:
             break;
     }
@@ -480,8 +546,7 @@ bool is_parentesis(short type) {
 void risolve_until_a_parentesis(short finish, list<break_point_entity *> *BREAK_POINT, list<Entity *> *BUFFER,
                                 Entity *ACTUAL) {
     print("aaaa");
-    resolve_until_last_break_point(BREAK_POINT->back()->get_ref(), BUFFER, BREAK_POINT);
-    BREAK_POINT->pop_back();
+
 
     print("break point buffer:");
     for (auto x: *BREAK_POINT) {
@@ -750,11 +815,17 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
             CORE_SYMBLETABLE->add_node();
         }
 
+        // sottolivello della symble_table
+        if((*ACTUAL)->getType()== syntax_analyzer::IF_DECLARATION){
+            CORE_SYMBLETABLE->add_node();
+        }
+
 
         if ((*ACTUAL)->getType() < 500) {
             if ((*ACTUAL)->getType() > 490) {
                 if ((*ACTUAL)->getType() == syntax_analyzer::LEFT_CURLY or (*ACTUAL)->getType() ==
                     syntax_analyzer::LEFT_SQUARE or (*ACTUAL)->getType() == syntax_analyzer::LEFT_PAREN) {
+                    cout<<"aggiunta parentesi di aperturw"<< endl;
                     // parentesi di apertura
                     parser_core(BREAK_POINT.back()->get_ref(), BUFFER);
                     BUFFER->push_back((*ACTUAL));
@@ -767,8 +838,9 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
 
                 } else {
                     if ((*ACTUAL)->getType() - 1 == OPEN_PARENTESIS->back()) {
+
                         cout << "reftype:" << OPEN_PARENTESIS->back() << endl;
-                        risolve_until_a_parentesis(OPEN_PARENTESIS->back(), &BREAK_POINT, BUFFER, *ACTUAL);
+                        risolve_until_a_parentesis((OPEN_PARENTESIS->back()), &BREAK_POINT, BUFFER, *ACTUAL );
                         OPEN_PARENTESIS->pop_back();
 
                         print("break point buffer:");

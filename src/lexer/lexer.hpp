@@ -9,6 +9,8 @@
 #include <string>
 #include <regex>
 #include <list>
+
+#include "../parser/break_layer.hpp"
 #include "../syntax_analyzer/syntax_analyzer.hpp"
 using namespace std;
 
@@ -314,6 +316,7 @@ Entity* lex(string word) {
         if (word == "[") {
             token* x = new token(Parser::LEFTSQUARE, word, col, line);
             Entity* y= new left_square(x);
+            return y;
         }
         if (word == "]") {
             token* x = new token(Parser::RIGHTSQUARE, word, col, line);

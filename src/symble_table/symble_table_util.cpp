@@ -12,14 +12,22 @@ enum ENUM_INFO {
     VARIABILE,
     CLASSE,
     PUNTATORE,
-    FUNZIONE
+    FUNZIONE,
+    BLOCCO,
+    ARRAY
 };
 
+
+/**
+*   @attention aggiunta compatibilita con i TOKEN
+*/
 enum ENUM_TIPO_VARIABILE {
     NONE_VAR,  // Renamed to avoid conflict
-    INT,
-    FLOAT,
-    BOOLEAN
+    INT=Parser::INTLIT,
+    FLOAT=Parser::FLOATLIT,
+    BOOLEAN=Parser::BOOLLIT,
+    PTR=Parser::CLASS,
+
 };
 
 #endif // symble_table_util_hpp

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "symble_table_row/symble_table_row.hpp"
 
 
@@ -17,6 +19,8 @@ class SymbleTable_Core {
 public:
     NODE* root; ///< Pointer to the root node of the symbol table.
     NODE* actual_node; ///< Pointer to the current node in the symbol table.
+
+    const string* plain_string_for_block= new string("___");
 
     bool check_if_present_at_global_level(const string*key) const {
 
@@ -75,33 +79,85 @@ public:
     //gesu cristo,chi me l ha fatto fatto fare
     // per il futuro me, ricordati di non avere ste idee di merda!!!
     // chi cazzo me l ha fatta fare
+    [[nodiscard]] SymbleTable_Row* exist_propriety_of_a_class(SymbleTable_Row* object_key, string* propriety_key) const {
+        cout<<"funzione di merda"<<endl;
 
 
-    [[nodiscard]]bool exist_propriety_of_a_class(const string* object_key, const string* propriety_key) const {
-        //TODO: // implementare errore se la classe non resist
-        SymbleTable_Row* object = this->actual_node->get(object_key);
-        if (object== nullptr) {
-            // oggetto non dichiarato
-            cout<<"ERRORE: OGGETTO NON ESISTENTE"<<endl;
-            exit(0);
+        cout<<"ciao"<<object_key->get_name()<< endl;
 
-        }
-        if (object->get_info()!=ENUM_INFO::CLASSE) {
+        if (object_key->get_info()!=PUNTATORE) {
             // oggetto non è una classe
             cout << "ERRORE: OGGETTO NON E UNA CLASSE" << endl;
             exit(0);
         }
-
-        if (NODE* class_node = object->get_oggetto_puntato(); class_node->map.contains(*propriety_key)) {
-            return true;
+        cout<< "passato if 1 "<< endl;
+        auto x= object_key->get_oggetto_puntato();
+        if (x->map.contains(*propriety_key)) {
+            return x->map[*propriety_key];
         }else {
-            cout << "ERRORE: PROPRIETA' NON ESISTENTE" << endl;
+            cout<<"non esiste una proprieta del genere in quella classe";
             exit(0);
         }
 
     }
 
 
+
+    [[nodiscard]]SymbleTable_Row* exist_propriety_of_a_class(const string* object_key, const string* propriety_key) const {
+        cout<< "funzione di merda"<< endl;
+        //TODO: // implementare errore se la classe non resist
+        SymbleTable_Row* object = this->actual_node->get(object_key);
+        cout<<"passato"<< endl;
+        if (object== nullptr) {
+            // oggetto non dichiarato
+            cout<<"ERRORE: OGGETTO NON ESISTENTE"<<endl;
+            exit(0);
+
+        }
+        cout<< "passato"<< endl;
+        cout<<object->get_info()<< endl;
+        cout<<*object->get_name()<< endl;
+        if (object->get_info()!=ENUM_INFO::PUNTATORE) {
+            // oggetto non è una classe
+            cout << "ERRORE: OGGETTO NON E UNA CLASSE" << endl;
+            exit(0);
+        }
+        cout<< "passato"<< endl;
+
+        NODE* class_node = object->get_oggetto_puntato();
+        cout<< "passato"<< endl;
+        cout << *propriety_key<< endl;
+        if (class_node->map.contains(*propriety_key)) {
+            cout<< "passato"<< endl;
+            return class_node->map[*propriety_key];
+        }
+        cout<< "proprietà non esistente"<< endl;
+        exit(0);
+        return nullptr;
+
+    }
+
+    [[nodiscard]] SymbleTable_Row* get_row(const string* propriety_key, SymbleTable_Row* object_key) const {
+        cout<<"funzione di merda_2"<<endl;
+
+
+        cout<<"ciao"<<object_key->get_name()<< endl;
+
+        if (object_key->get_info()!=PUNTATORE) {
+            // oggetto non è una classe
+            cout << "ERRORE: OGGETTO NON E UNA CLASSE" << endl;
+            exit(0);
+        }
+        cout<< "passato if 1 "<< endl;
+        auto x= object_key->get_oggetto_puntato();
+        if (x->map.contains(*propriety_key)) {
+            return x->map[*propriety_key];
+        }else {
+            cout<<"non esiste una proprieta del genere in quella classe";
+            exit(0);
+        }
+
+    }
 
 
     [[nodiscard]] ENUM_TIPO_VARIABILE get_tipo_variabile(const string* key) const {
@@ -113,15 +169,15 @@ public:
             temp_actual_node = temp_actual_node->up_layer;
         }
         //TODO errore variabile non esistente
-        return ENUM_TIPO_VARIABILE::NONE_VAR;
+
+        cout<<"variabile non esistente"<< endl;
+        exit(0);
     }
 
 
     SymbleTable_Core() {
         this->root = new NODE(nullptr);
         this->actual_node = this->root;
-
-
     }
 
     /**
@@ -143,7 +199,6 @@ public:
     }
 
 
-
     /**
      * @brief Moves to the parent node of the current node.
      * @return Pointer to the previous current node.
@@ -152,6 +207,10 @@ public:
         NODE* temp = this->actual_node;
         this->actual_node = this->actual_node->get_up_layer();
         return temp;
+    }
+
+    SymbleTable_Row* get(const string* key) const {
+        return this->actual_node->get(key);
     }
 
 
@@ -166,7 +225,7 @@ public:
     }
 
     /**
-     *@details funione di debug per la visione della symble table
+     *@details function di debug per la visione della symble table
      */
     void print() const{
         this->root->print("    ");

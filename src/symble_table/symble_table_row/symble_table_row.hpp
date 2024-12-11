@@ -1,6 +1,9 @@
 //
 // Created by basil on 18/11/2024.
 //
+#pragma once
+
+
 
 #ifndef symble_table_row_hpp
 #define symble_table_row_hpp
@@ -10,10 +13,13 @@
 #include <string>
 #include <cstdint>
 #include <vector>
-#include "../../syntax_analyzer/entity.cpp"
+
+
+#include "../../syntax_analyzer/entity.hpp"
 #include "robin_hood.h"
 #include "../../../external_library/plf_queue.h"
 
+class Entity;
 class NODE;
 
 class SymbleTable_Row {
@@ -30,6 +36,7 @@ public:
     virtual void set_usato(bool usato) {}
     virtual NODE* get_oggetto_puntato() { return nullptr; }
     virtual void print(string spaziatura){return;}
+    virtual NODE* get_contesto() { return nullptr; }
 };
 
 
@@ -47,7 +54,7 @@ public:
     uint32_t posizione = 0; ///< The current position in the node.
     NODE* up_layer; ///< Pointer to the parent node in the hierarchy.
     robin_hood::unordered_node_map<std::string, SymbleTable_Row*> map; ///< Map to store symbol table rows.
-
+    SymbleTable_Row* return_type=nullptr; ///< Return type of the node.
     /**
      * @brief Constructs a new NODE object.
      * @param up_layer Pointer to the parent node.
@@ -81,7 +88,7 @@ public:
      * @param key Pointer to the key string.
      * @return 1 if the key exists, otherwise 0.
      */
-    short contains_key(const std::string* key) {
+    short contains_key(const std::string* key) const {
         if (map.contains(*key)) {
             return 1;
         }
@@ -116,6 +123,7 @@ public:
             return map[*key];
         }else {
             if (this->get_up_layer()==nullptr) {
+                //TODO errore
                 return nullptr;
             }else {
                 return this->get_up_layer()->get(key);
@@ -135,11 +143,25 @@ public:
     }
 
     void print(string spaziatura) {
+        cout<<"--------------------------"<<endl;
+
         for (auto& x : map) {
+
             std::cout<< spaziatura << x.first << "   |||    " ;
             x.second->print(spaziatura);
         }
-    }};
+
+        if(return_type!=nullptr){
+            std::cout<< spaziatura << "return type" << "   |||    " ;
+            return_type->print(spaziatura);
+
+        }
+        cout<<"--------------------------"<<endl;
+    }
+
+
+
+};
 
 
 
@@ -182,6 +204,7 @@ public:
      * @return The type of the variable.
      */
     ENUM_TIPO_VARIABILE get_tipo() override {
+        cout<< "come mai mi generi un errore "<< this;
         return this->tipo_variabile;
     }
 
@@ -213,7 +236,7 @@ public:
      * @brief Sets the usage status of the variable.
      * @param _usato Boolean indicating whether the variable has been used.
      */
-    void set_usato(bool _usato) override {
+    void set_usato(const bool _usato) override {
         this->usato = _usato;
     }
 
@@ -262,10 +285,11 @@ public:
 
     // variabili
     std::string* nome;
-    ENUM_TIPO_VARIABILE tipo_variabile = ENUM_TIPO_VARIABILE::NONE_VAR;
-    std::vector<short>* paramether_type;
-    std::vector<short>* return_type;
-    Entity* Block;
+
+    string* paramether_type;
+    ENUM_TIPO_VARIABILE return_type;
+    NODE* Block;
+
 
     bool usato = false;
 
@@ -278,51 +302,43 @@ public:
         return this->info;
     }
 
-    ENUM_TIPO_VARIABILE get_tipo() override {
-        return this->tipo_variabile;
-    }
 
     void set_usato(bool _usato) override {
-        this->usato = _usato;
+       this->usato = _usato;
     }
 
     bool get_usato() override {
         return this->usato;
     }
 
-    std::string* hash_nome_variabile() {
-        this->nome->append( "_");
-        for (int i = 0; i < paramether_type->size(); i++) {
-            this->nome->append( std::to_string(paramether_type->operator[](i)));
-        }
-        this->nome->append("_");
-        for (int i = 0; i < return_type->size(); i++) {
-            this->nome->append( std::to_string(paramether_type->operator[](i)));
-        }
-        return this->nome;
+    [[nodiscard]] static std::string* hash_nome_variabile(string* nome, string* paramether_type, ENUM_TIPO_VARIABILE return_type ) {
+        auto* x= new string(*nome);
+        x->append( "_");
+        x->append( *paramether_type);
+        return x;
     }
 
-    SymbleTable_Row_Funzione(std::string* nome, ENUM_TIPO_VARIABILE tipo_variabile) {
-        this->nome = nome;
-        this->tipo_variabile = tipo_variabile;
-        this->Block=nullptr;
-
+    NODE* get_oggetto_puntato() override {
+        return this->Block;
     }
 
-    SymbleTable_Row_Funzione(std::string* nome, ENUM_TIPO_VARIABILE tipo_variabile, Entity* Block, std::vector<short>* paramether_type, std::vector<short>* return_type) {
-
+    SymbleTable_Row_Funzione(std::string* nome, string* paramether, ENUM_TIPO_VARIABILE return_type, NODE* block) {
         this->nome = nome;
-        this->tipo_variabile = tipo_variabile;
-        this->Block=Block;
-        this->paramether_type= paramether_type;
-        this->return_type= return_type;
+        this->paramether_type = paramether;
+        this->return_type = return_type;
+        this->Block=block;
+    }
 
+    void print(string s) override{
+        cout << *this->nome << " ||| " << return_type<< " ||| " << paramether_type << std::endl;
+        this->Block->print(s+"    ");
     }
 };
 
 class SymbleTable_Row_Puntatore : public SymbleTable_Row {
 public:
     const ENUM_INFO info = ENUM_INFO::PUNTATORE;
+
 
     // variabili
     std::string* nome;
@@ -333,6 +349,10 @@ public:
     // Funzioni
     ENUM_INFO get_info() override {
         return this->info;
+    }
+
+    ENUM_TIPO_VARIABILE get_tipo() override {
+        return ENUM_TIPO_VARIABILE::PTR;
     }
 
     std::string* get_name() override {
@@ -387,6 +407,11 @@ public:
         return this->info;
     }
 
+    NODE* get_oggetto_puntato() override {
+        return this->table;
+    }
+
+
     /**
      * @brief Gets the name of the class.
      * @return Pointer to the name of the class.
@@ -414,6 +439,111 @@ public:
 
 };
 
+
+/** @class SymbleTable_Row_Blocco
+ * @brief Represents a block row in the symbol table.
+ *
+ * This class is used to manage block entries in the symbol table.
+ */
+class SymbleTable_Row_Blocco : public SymbleTable_Row {
+public:
+    const ENUM_INFO info = ENUM_INFO::BLOCCO; ///< Information type for the block row.
+
+    NODE* contesto; ///< Context of the block.
+    NODE* table; ///< Pointer to the symbol table node associated with the block.
+
+    /**
+     * @brief Gets the information type of the block row.
+     * @return The information type of the block row.
+     */
+    ENUM_INFO get_info() override {
+        return this->info;
+    }
+
+    /**
+     * @brief Gets the symbol table node associated with the block.
+     * @return Pointer to the symbol table node.
+     */
+    NODE* get_oggetto_puntato() override {
+        return this->table;
+    }
+
+    /**
+     * @brief Gets the name of the block.
+     * @return Pointer to the name of the block.
+     */
+    std::string* get_name() override {
+        return new std::string("___");
+    }
+
+    /**
+     * @brief Gets the context of the block.
+     * @return Pointer to the context node.
+     */
+    NODE* get_contesto() override {
+        return this->contesto;
+    }
+
+    /**
+     * @brief Constructs a new SymbleTable_Row_Blocco object.
+     * @param contesto Pointer to the context node.
+     * @param table Pointer to the symbol table node associated with the block.
+     */
+    SymbleTable_Row_Blocco(NODE* contesto, NODE* table) {
+        this->contesto = contesto;
+        this->table = table;
+    }
+
+    /**
+     * @brief Prints the block row information.
+     * @param spaziatura Indentation for printing.
+     */
+    void print(std::string spaziatura) {
+        std::cout << "nome: " << "___" << std::endl;
+        table->print(spaziatura + "    ");
+    }
+};
+
+class SymbleTable_Row_Array : public SymbleTable_Row {
+public:
+    const ENUM_INFO info = ENUM_INFO::ARRAY;
+    ENUM_TIPO_VARIABILE tipo= ENUM_TIPO_VARIABILE::NONE_VAR;
+
+    std::string* nome;
+    uint32_t posizione;
+    bool usato = false;
+
+    ENUM_INFO get_info() override {
+        return this->info;
+    }
+
+    std::string* get_name() override {
+        return this->nome;
+    }
+
+    uint32_t get_posizione() override {
+        return this->posizione;
+    }
+
+    void set_usato(bool _usato) override {
+        this->usato = _usato;
+    }
+
+    bool get_usato() override {
+        return this->usato;
+    }
+
+    ENUM_TIPO_VARIABILE get_tipo() override {
+        return this->tipo;
+    }
+
+    SymbleTable_Row_Array(string* name, uint32_t posizione, ENUM_TIPO_VARIABILE tipo) {
+        this->nome=name;
+        this->posizione=posizione;
+        this->tipo=tipo;
+    }
+};
+
 inline ENUM_TIPO_VARIABILE get_tipo_variabile_from_string(const string ciao) {
     if (ciao == "int") {
         return ENUM_TIPO_VARIABILE::INT;
@@ -422,7 +552,7 @@ inline ENUM_TIPO_VARIABILE get_tipo_variabile_from_string(const string ciao) {
     } else if (ciao == "bool") {
         return ENUM_TIPO_VARIABILE::BOOLEAN;
     } else {
-        return ENUM_TIPO_VARIABILE::NONE_VAR;
+        return ENUM_TIPO_VARIABILE::PTR;
     }
 }
 
@@ -434,6 +564,9 @@ inline short get_size_from_tipo_variabile(ENUM_TIPO_VARIABILE tipo) {
             break;
         case ENUM_TIPO_VARIABILE::BOOLEAN:
             return 1;
+            break;
+        case ENUM_TIPO_VARIABILE::PTR:
+            return 8;
             break;
         default:
             return 0;

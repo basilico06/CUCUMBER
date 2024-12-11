@@ -79,6 +79,7 @@ class syntax_analyzer {
         static const short FOR_STATMENT=611;
         static const short IF_STATMENT=612;
         static const short WHILE_STATMENT=613;
+        static const short RETURN_STATEMENT=614;
 
         static const short FORMAL_PARAMETHER_LIST = 701;
         static const short REAL_PARAMETHER_LIST = 702;

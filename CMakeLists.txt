@@ -7,4 +7,5 @@ add_executable(starfish_programming_language main.cpp
         src/lexer/lexer_util.hpp
         src/syntax_analyzer/syntax_analyzer.hpp
         src/parser/parser.cpp
-        src/symble_table/symble_table_row/symble_table_row.hpp)
+        src/symble_table/symble_table_row/symble_table_row.hpp
+        src/syntax_analyzer/entity.hpp)

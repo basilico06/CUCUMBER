@@ -1,14 +1,21 @@
-//
-// Created by basil on 18/11/2024.
-//
-#include <deque>
-#include <string>
-#include "syntax_analyzer_util.cpp"
-#include "../symble_table/symble_table_util.cpp"
-using namespace std;
+
 
 #ifndef entity_hpp
 #define entity_hpp
+
+//
+// Created by basil on 18/11/2024.
+//
+#pragma once
+//todo error
+using namespace std;
+#include <deque>
+#include <string>
+#include "syntax_analyzer_util.cpp"
+#include "../symble_table/symble_table_row/symble_table_row.hpp"
+#include "../symble_table/symble_table_util.cpp"
+
+class SymbleTable_Row;
 
 /**
  * @class Entity
@@ -81,7 +88,11 @@ public:
      */
     virtual void add(Entity* second, Entity* operand) { }
 
+
     virtual ENUM_TIPO_VARIABILE get_tipo_operazione() { return ENUM_TIPO_VARIABILE::NONE_VAR;} ///< The type of the variable.
+    virtual SymbleTable_Row* oggetto_puntato() { return nullptr; } ///< Pointer to the object.
+    virtual token* get_token(){return nullptr;}
+    virtual string* get_string_from_list(){return nullptr;}
 };
 
 #endif // entity_hpp
