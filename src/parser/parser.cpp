@@ -19,6 +19,7 @@ list<Entity *>::iterator safe_next(list<Entity *>::iterator it, list<Entity *> &
     return result;
 }
 
+
 void parse_2_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     if (std::distance(start, BUFFER->end()) < 3) {
         throw std::runtime_error("Not enough elements for parse_2_entity");
@@ -95,6 +96,15 @@ void print_entity_debug(Entity *entity, const std::string &prefix = "") {
     }
 }
 
+/**
+ *
+ * to use just after add end of file
+ *
+ */
+bool check_right_end(list<Entity *> *BUFFER) {
+    return BUFFER->size() == 3 and BUFFER->back()->getType() == syntax_analyzer::END_FILE;
+}
+
 void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     std::cout << "\nParse 3 Entity Debug:" << std::endl;
     std::cout << "Start iterator position: " << std::distance(BUFFER->begin(), start) << std::endl;
@@ -118,6 +128,17 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
     print_entity_debug(second);
     std::cout << "Third entity: ";
     print_entity_debug(third);
+
+    if(third->getType()==syntax_analyzer::END_FILE) {
+        if(first->getType() == syntax_analyzer::START_FILE) {
+            Entity* ENTITY = new script(second);
+            BUFFER->pop_back();
+            BUFFER->pop_back();
+            BUFFER->pop_back();
+            BUFFER->push_back(ENTITY);
+            return;
+        }
+    }
 
     if (first->getType()== syntax_analyzer::VAR and second->getType()==syntax_analyzer::DOT and third->getType()==syntax_analyzer::VAR){
 
@@ -491,7 +512,7 @@ void parse_default(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
     //todo IMPORTANT COMPLETARE TUTTI I CASI
     if ((*first)->getType()==syntax_analyzer::FUNCTION_DEC and (*second)->getType()==syntax_analyzer::VAR and (*third)->getType()==syntax_analyzer::FORMAL_PARAMETHER_LIST and (*fourth)->getType()==syntax_analyzer::BLOCK){
-        Entity* ENTITY = new function_declaration((*second), (*third));
+        Entity* ENTITY = new function_declaration((*second), (*third), (*third));
         BUFFER->pop_back();
         BUFFER->pop_back();
         BUFFER->pop_back();
@@ -792,6 +813,7 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
 
     list<break_point_entity *> BREAK_POINT = list<break_point_entity *>();
 
+
     list<short> *OPEN_PARENTESIS = new list<short>();
     BUFFER->push_back(new START_FILE());
     BREAK_POINT.push_back(new break_point_entity(break_point_type::OPERAND, break_point_layer::file,
@@ -890,8 +912,30 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
         cout << "-----------------------------------------------" << endl;
         cout << "break-point size:" << BREAK_POINT.size() << endl;
     }
-    print_deque(BUFFER);
+
+
+
+
+    cout << "break-point size:" << BREAK_POINT.size() << endl;
+    resolve_until_is_higher_or_equal(&BREAK_POINT, BUFFER, 998);
+    BUFFER->push_back(new END_FILE());
+    if (!check_right_end(BUFFER)) {
+        cout << "ERRORE: file strutturato male" << endl;
+        exit(0);
+    }
+
+    auto second= *(BUFFER->begin().operator++());
+    BREAK_POINT.pop_back();
+    BUFFER->pop_back();
+    BUFFER->pop_back();
+    BUFFER->pop_back();
+
+    BUFFER->push_back(new script(second));
+
     print("break point:");
+    for (auto x: BREAK_POINT) {
+        cout << "    ---   " << x->get_ref_type() << endl;
+    }
 
     return BUFFER;
 }
@@ -908,6 +952,15 @@ int main() {
     }
     print("output:");
     print_deque(res_par);
+
+    if(res_par->size()!=1) {
+        cout << "ERRORE: il programma non è stato scritto correttamente" << endl;
+        return 0;
+    }
+
+    res_par->front()->GET_CODE();
+
+
 
     CORE_SYMBLETABLE->print();
     return 0;

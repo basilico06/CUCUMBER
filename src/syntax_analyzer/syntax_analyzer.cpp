@@ -1,6 +1,7 @@
 
 
 
+
 #ifndef syntax_analyzer_hpp
 #define syntax_analyzer_hpp
 #pragma once
@@ -9,18 +10,26 @@
 #include "entity.hpp"
 #include "syntax_analyzer_util.cpp"
 
-#include "../symble_table/symble_table_row/symble_table_row.hpp"
+#include "../symble_table/symble_table.cpp"
 #include <cstdlib>
 #include <io.h>
+#include "../codegen/codegen.cpp"
 
-#include "../symble_table/symble_table.cpp"
 /*
 --------------------------------------------------------------
 dichiaraioni clasi per futuro albero di sintassi
 --------------------------------------------------------------
 */
 
+#include <fstream>
+/**
+ *
+ * utilizzare con cura
+ *
+ */
+auto VIRTUAL_MACHINE=new llvm();
 
+#include "../file_writer.hpp"
 
 
 class START_FILE : public Entity {
@@ -1102,24 +1111,28 @@ public:
 
 class function_declaration : public Entity {
     void add_to_symble_table(string* identifier, string* parametri, ENUM_TIPO_VARIABILE return_enum_tipo_variabile) {
-        auto temp=SymbleTable_Row_Funzione::hash_nome_variabile(identifier, parametri, return_enum_tipo_variabile);
-        if(CORE_SYMBLETABLE->actual_node->get_up_layer()->map.contains(*temp)) {
+        cout<<"t0"<<endl;
+        this->nome_hash=SymbleTable_Row_Funzione::hash_nome_variabile(identifier, parametri, return_enum_tipo_variabile);
+
+        if(CORE_SYMBLETABLE->actual_node->get_up_layer()->map.contains(*nome_hash)) {
             //TODO errore nome variabile gia dichierata a livello locale
 
             cout<<"errore FUNZIONE gia dichiarata a livello locale"<< endl;
 
             exit(0);
         }
-        cout << "t3" << endl;
-        CORE_SYMBLETABLE->insert_at_actual_node(
-            temp,
-            new SymbleTable_Row_Funzione(
+
+        riga_puntata= new SymbleTable_Row_Funzione(
                 identifier,
                 parametri,
                 return_enum_tipo_variabile,
                 CORE_SYMBLETABLE->go_to_parent_node()
+                );
 
-            ));
+        CORE_SYMBLETABLE->insert_at_actual_node(
+            nome_hash,
+            riga_puntata
+            );
     }
 public:
     short type;
@@ -1128,20 +1141,39 @@ public:
         return category_syntax_analyzer::_default;
     }
 
-    Entity *IDENTIFIER;
+    string* nome_hash;
     Entity *PARAMATHER;
+    SymbleTable_Row_Funzione *riga_puntata;
     ENUM_TIPO_VARIABILE return_enum_tipo_variabile;
+
+    [[nodiscard]]
 
     short getType() const { return type; }
 
-    function_declaration(Entity *identify, Entity *paramether) {
-        cout<<"t1"<<endl;
+
+
+    function_declaration(Entity *identify, Entity *paramether, Entity* block) {
+        cout<<"t33"<< CORE_SYMBLETABLE->actual_node->return_type->get_tipo() <<endl ;
         add_to_symble_table(identify->get_name(), paramether->get_string_from_list(),CORE_SYMBLETABLE->actual_node->return_type->get_tipo());
         cout<<"t2"<<endl;
-        this->IDENTIFIER = identify;
         this->PARAMATHER = paramether;
-        this->return_enum_tipo_variabile=CORE_SYMBLETABLE->actual_node->return_type->get_tipo();
         this->type = syntax_analyzer::FUNCTION_DECLARATION;
+    }
+
+
+    void GET_CODE() override {
+        cout<<"function_declaration"<<endl;
+
+        output->writeLine(*this->nome_hash+":");
+        output->writeLine("sub rsp, " + this->riga_puntata->get_oggetto_puntato()->lenght);
+
+
+        // todo rest of the code
+
+
+        output->writeLine("add rsp, " + this->riga_puntata->get_oggetto_puntato()->lenght);
+        output->writeLine("ret");
+
     }
 };
 
@@ -1328,7 +1360,7 @@ class math_expression : public Entity {
         return first->get_tipo_operazione();
     }
 
-    ENUM_TIPO_VARIABILE check(Entity* first, ENUM_TIPO_VARIABILE second ) const {
+    [[nodiscard]]ENUM_TIPO_VARIABILE check(Entity* first, ENUM_TIPO_VARIABILE second ) const {
         if(first->get_tipo_operazione()!=second) {
             //TODO errore
             cout<<"ERRORE: TIPO NON COMPATIBILE"<<endl;
@@ -1494,6 +1526,12 @@ public:
     deque<Entity *> *get_deque() override {
         return &this->LIST_OF_ISTRUCTION;
     }
+
+    void GET_CODE() override {
+        for (auto x : this->LIST_OF_ISTRUCTION) {
+            x->GET_CODE();
+        }
+    }
 };
 
 class for_paramether : public Entity {
@@ -1511,7 +1549,6 @@ public:
 };
 
 class for_statment : public Entity {
-
 public:
     short type = syntax_analyzer::FOR_STATMENT;
 
@@ -1609,10 +1646,42 @@ public:
 
     short getCategory() override { return category_syntax_analyzer::_default; }
     short getType() const override { return type; }
+};
+
+
+
+/*
+ * classe da mettere dopo che finisce il buffer del parser per dire che il file è finito
+ */
+class END_FILE : public Entity {
+public:
+    short type = syntax_analyzer::END_FILE;
+
+    short getCategory() override { return category_syntax_analyzer::_default; }
+    short getType() const override { return type; }
+
 
 };
 
 
+class script: public Entity {
+public:
+    short type = syntax_analyzer::SCRIPT;
+
+    Entity* program ;
+
+    short getCategory() override { return category_syntax_analyzer::_default; }
+    short getType() const override { return type; }
+
+
+    explicit script(Entity* program) {
+        this->program=program;
+    }
+
+    void GET_CODE() override {
+        this->program->GET_CODE();
+    }
+};
 
 //////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 #ifndef break_layer_hpp
 #define break_layer_hpp
-#include "../syntax_analyzer/syntax_analyzer.hpp"
+#include "../syntax_analyzer/syntax_analyzer.cpp"
 
 
 
@@ -16,6 +16,7 @@ public:
     static const short layer_7=7;
     static const short layer_8=8;
     static const short layer_9=9;
+    static const short file_end=998;
     static const short file=999;
 };
 

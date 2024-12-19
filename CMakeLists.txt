@@ -5,7 +5,12 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_executable(starfish_programming_language main.cpp
         src/lexer/lexer_util.hpp
-        src/syntax_analyzer/syntax_analyzer.hpp
+        src/syntax_analyzer/syntax_analyzer.cpp
         src/parser/parser.cpp
-        src/symble_table/symble_table_row/symble_table_row.hpp
-        src/syntax_analyzer/entity.hpp)
+        src/syntax_analyzer/entity.hpp
+        src/codegen/codegen.cpp
+        src/codegen/codegen.cpp
+        src/codegen/codegen.cpp
+        src/file_writer.hpp
+        src/file_writer.hpp
+)

@@ -2,7 +2,7 @@
 // Created by basil on 18/11/2024.
 //
 
-#include <string>
+
 
 #ifndef syntax_analyzer_util_hpp
 #define syntax_analyzer_util_hpp
@@ -12,7 +12,7 @@ class util_syntax_analyzer{
 public:
 
     static constexpr short max_id_operand=490;
-    static const short max_id_parentesis=500;
+    static constexpr short max_id_parentesis=500;
     static const short first_id_allocation=800;
 
 };
@@ -92,7 +92,10 @@ class syntax_analyzer {
         static const short ARRAY_DECLARATION = 803;
         static const short CLASS_STATMENT=804;
 
-        static const short START_FILE=1023;
+        static constexpr short START_FILE=1023;
+        static constexpr short END_FILE=1024;
+
+        static constexpr short SCRIPT=1025;
 
 };
 

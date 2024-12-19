@@ -11,7 +11,7 @@
 #include <list>
 
 #include "../parser/break_layer.hpp"
-#include "../syntax_analyzer/syntax_analyzer.hpp"
+#include "../syntax_analyzer/syntax_analyzer.cpp"
 using namespace std;
 
     //

@@ -7,13 +7,15 @@
 // Created by basil on 18/11/2024.
 //
 #pragma once
+class NODE;
 //todo error
 using namespace std;
 #include <deque>
 #include <string>
 #include "syntax_analyzer_util.cpp"
-#include "../symble_table/symble_table_row/symble_table_row.hpp"
+#include "../symble_table/symble_table.cpp"
 #include "../symble_table/symble_table_util.cpp"
+#include "../lexer/token.hpp"
 
 class SymbleTable_Row;
 
@@ -93,6 +95,10 @@ public:
     virtual SymbleTable_Row* oggetto_puntato() { return nullptr; } ///< Pointer to the object.
     virtual token* get_token(){return nullptr;}
     virtual string* get_string_from_list(){return nullptr;}
+    virtual void GET_CODE() { cout << "not implemented : " <<this->getType()<< endl; } ///< Gets the code.
+    virtual void set_NODE(NODE* node) { return; } ///< Sets the node.
+    virtual NODE* get_NODE() { return nullptr; } ///< Gets the node.
+
 };
 
 #endif // entity_hpp

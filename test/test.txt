@@ -1,4 +1,11 @@
-5+5;
+
+method Start(int a , int b) {
+    int x = 5;
+    int y = 6;
+    return y
+}
+
+
 
 
 
