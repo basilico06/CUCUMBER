@@ -1,0 +1,28 @@
+Start_262262:
+	sub rsp, 12
+	; ASSIGN a = math_expression
+	
+	; MATH EXPRESSION
+	
+	mov ecx , DWORD [ rsp + 4 ]
+	mov eax , DWORD [ rsp + 8 ]
+	add eax, ecx
+	mov EAX, eax
+	; ALLOCATION di ain posizione : 8
+	mov DWORD [ rsp + 0 ], EAX
+	; return statment -> mette in una derivazione di eax 
+	mov EAX, DWORD [ rsp + 0 ]
+	add rsp, 12
+	ret
+	
+	
+	; CALL FUNCTION Start_262262
+	mov rbx, rsp
+	; paramether
+	 mov rbx, rsp
+	sub rsp, 16
+	mov  DWORD[rsp+4] , 2
+	mov  DWORD[rsp+0] , 5
+	add rsp, 16
+	; parametri conclusi
+	call Start_262262
