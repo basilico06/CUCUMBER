@@ -1,15 +1,16 @@
 //
 // Created by basil on 16/12/2024.
 //
-
+#pragma once
+#ifndef FILE_WRITER_H
+#define FILE_WRITER_H
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
 
 
-#ifndef FILE_WRITER_H
-#define FILE_WRITER_H
+
 
 class File_Writer_ {
 private:
@@ -17,7 +18,7 @@ private:
 
 public:
     // Constructor
-    explicit File_Writer_(const std::string& filename) {
+    File_Writer_(const std::string& filename) {
 
         file.open(filename, std::ios::out | std::ios::trunc);
         if (!file.is_open()) {
@@ -25,17 +26,20 @@ public:
         }
     }
 
-    // Destructor
-    ~File_Writer_() {
-        if (file.is_open()) {
-            file.close();
-        }
-    }
-
     // Write a single line to the file
     void writeLine(const std::string& line) {
         if (file.is_open()) {
+            cout << line << endl;
             file << line << '\n';
+        } else {
+            throw std::ios_base::failure("File is not open for writing.");
+        }
+    }
+
+    void writeLineWithTab(const std::string& line) {
+        if (file.is_open()) {
+            cout << line << endl;
+            file <<'\t'<< line << '\n';
         } else {
             throw std::ios_base::failure("File is not open for writing.");
         }
@@ -52,7 +56,18 @@ public:
     bool isOpen() const {
         return file.is_open();
     }
+
+
+    void close() {
+        if (file.is_open()) {
+            file.close();
+        }
+    }
 };
+
+File_Writer_* output = new File_Writer_("output.asm");
+
+
 
 #endif // FILE_WRITER_H
 

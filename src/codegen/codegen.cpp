@@ -74,6 +74,15 @@ public:
 
 
 class llvm {
+
+    void stack_adjustment(const uint32_t x) {
+        this->stack_offset += x;
+    }
+
+
+    void stack_pop(const uint32_t x) {
+        this->stack_offset += x;
+    }
 public:
 
     llvm_register register_= llvm_register();
@@ -81,28 +90,32 @@ public:
     section bss_section= section();
     section data_section= section();
 
+
+    int loop_index=0;
+    int if_index=0;
     uint64_t stack_offset=0;
     vector<NODE*>* actual_node_function= new vector<NODE*>();
-
+    uint64_t temp_offset=0;
     llvm()= default;
 
-    void stack_adjustment(const uint32_t x) {
-        this->stack_offset += x;
-    }
 
-    void stack_pop(const uint32_t x) {
-        this->stack_offset += x;
-    }
 
-    uint64_t get_stack_offset_from_a_var(NODE* position, const string nome) const
+
+    uint64_t get_stack_offset_from_a_var( const string* nome) const
     {
+        cout<< "----------------" <<temp_offset<<endl;
+        uint64_t temp_stack_offset=0;
         auto temp_actual_node= this->actual_node_function->end();
         while (temp_actual_node!=this->actual_node_function->begin()) {
-
             --temp_actual_node;
-            if (temp_actual_node.operator*()==position) {
-                return temp_actual_node.operator*()->map[nome]->get_posizione();
+            cout<< *nome    ;
+            temp_actual_node.operator*()->print("-----");
+            if (temp_actual_node.operator*()->contains(nome)) {
+                const uint64_t ret = temp_offset+ temp_actual_node.operator*()->lenght - temp_actual_node.operator*()->map[*nome]->get_posizione()-temp_stack_offset;
+                cout<< "----------------#################à" <<ret<<endl;
+                return ret;
             }
+            temp_stack_offset+=temp_actual_node.operator*()->lenght;
         }
 
         //todo errore variabile non esistenteà
@@ -111,7 +124,7 @@ public:
 
     }
 
-    void set_actual_node_function(NODE* x) {
+    void stack_adjust(NODE* x) {
         this->actual_node_function -> push_back(x);
         stack_adjustment(x->lenght);
     }
@@ -120,5 +133,20 @@ public:
         stack_pop(this->actual_node_function->back()->lenght);
         this->actual_node_function->pop_back();
     }
+
+    ENUM_TIPO_VARIABILE get_tipo_variabile(string* name) {
+        auto temp_actual_node = this->actual_node_function->end();
+        while (temp_actual_node != this->actual_node_function->begin()) {
+            --temp_actual_node;
+            if (temp_actual_node.operator*()->contains(name)) {
+                return temp_actual_node.operator*()->map[*name]->get_tipo();
+            }
+        }
+
+        //todo errore variabile non esistente
+        exit(0);
+    }
+
 };
 
+llvm LLVM= llvm();

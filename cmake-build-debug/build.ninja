@@ -73,6 +73,12 @@ build CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj: 
   OBJECT_DIR = CMakeFiles\starfish_programming_language.dir
   OBJECT_FILE_DIR = CMakeFiles\starfish_programming_language.dir\src\codegen
 
+build CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj: CXX_COMPILER__starfish_programming_language_unscanned_Debug C$:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/init/init.cpp || cmake_object_order_depends_target_starfish_programming_language
+  DEP_FILE = CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.obj.d
+  FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\starfish_programming_language.dir
+  OBJECT_FILE_DIR = CMakeFiles\starfish_programming_language.dir\src\init
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target starfish_programming_language
@@ -81,7 +87,7 @@ build CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj: 
 #############################################
 # Link the executable starfish_programming_language.exe
 
-build starfish_programming_language.exe: CXX_EXECUTABLE_LINKER__starfish_programming_language_Debug CMakeFiles/starfish_programming_language.dir/main.cpp.obj CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj
+build starfish_programming_language.exe: CXX_EXECUTABLE_LINKER__starfish_programming_language_Debug CMakeFiles/starfish_programming_language.dir/main.cpp.obj CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\starfish_programming_language.dir

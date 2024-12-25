@@ -26,6 +26,7 @@ enum ENUM_TIPO_VARIABILE {
     INT=Parser::INTLIT,
     FLOAT=Parser::FLOATLIT,
     BOOLEAN=Parser::BOOLLIT,
+    STRING=Parser::STRINGLIT,
     PTR=Parser::CLASS,
 
 };

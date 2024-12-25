@@ -110,8 +110,6 @@ public:
         return 0;
     }
 
-
-
     /**
      * @brief Inserts a new key-value pair into the node.
      * @param key Pointer to the key string.
@@ -330,6 +328,8 @@ public:
 
     [[nodiscard]] ENUM_TIPO_VARIABILE get_tipo_variabile(const string* key) const {
         auto temp_actual_node = this->actual_node;
+        cout << "key = "<< *key<< endl;
+
         while (temp_actual_node!=nullptr) {
             if (temp_actual_node->map.contains(*key)) {
                 return temp_actual_node->map[*key]->get_tipo();
@@ -446,7 +446,6 @@ public:
      * @return The type of the variable.
      */
     ENUM_TIPO_VARIABILE get_tipo() override {
-        cout<< "come mai mi generi un errore "<< this;
         return this->tipo_variabile;
     }
 
@@ -493,7 +492,6 @@ public:
     NODE *get_contesto_var() override {
         return contesto_var;
     }
-
 
     /**
      * @brief Constructs a new SymbleTable_Row_Variabile object.
@@ -552,6 +550,9 @@ public:
         return this->info;
     }
 
+    ENUM_TIPO_VARIABILE get_tipo() override {
+        return this->return_type;
+    }
 
     void set_usato(bool _usato) override {
        this->usato = _usato;
@@ -817,6 +818,9 @@ inline ENUM_TIPO_VARIABILE get_tipo_variabile_from_string(const string ciao) {
         return ENUM_TIPO_VARIABILE::FLOAT;
     } else if (ciao == "bool") {
         return ENUM_TIPO_VARIABILE::BOOLEAN;
+    } else if (ciao == "string") {
+        return ENUM_TIPO_VARIABILE::STRING;
+
     } else {
         return ENUM_TIPO_VARIABILE::PTR;
     }
@@ -834,15 +838,53 @@ inline short get_size_from_tipo_variabile(ENUM_TIPO_VARIABILE tipo) {
         case ENUM_TIPO_VARIABILE::PTR:
             return 8;
             break;
+        case ENUM_TIPO_VARIABILE::STRING:
+            return 8;
+            break;
         default:
             return 0;
             break;
     }
 }
 
+inline string* get_register_from_size(short size) {
+    switch(size) {
+        case 1:
+            return new string("AL");
+            break;
+        case 4:
+            return new string("EAX");
+            break;
+        case 8:
+            return new string("RAX");
+            break;
+        default:
+            cout << "grandezza var sbagliata : "<< size << endl;
+            exit(0);
+            break;
+    }
+}
+
+inline string* get_alloc_from_size(short x) {
+    switch(x) {
+        case 1:
+            return new string("BYTE");
+            break;
+        case 4:
+            return new string("DWORD");
+            break;
+        case 8:
+            return new string("QWORD");
+            break;
+        default:
+            cout<< "grandezza var sbagliata : "<< x << endl;
+            exit(0);
+    }
 
 
 
+
+}
 
 
 

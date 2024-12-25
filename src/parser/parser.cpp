@@ -2,6 +2,7 @@
 #include "../syntax_analyzer/syntax_analyzer_util.cpp"
 #include <deque>
 #include "../symble_table/symble_table.cpp"
+#include  "../file_writer.hpp"
 
 void print(string x) {
     cout << x << endl;
@@ -287,9 +288,9 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
                 BUFFER->push_back(ENTITY);
                 return;
             }
-
-            // *TODO RICORDARSI DI IMPLEMENTARE GLI ERRORI SENNO SONO CAZZI
         }
+            // *TODO RICORDARSI DI IMPLEMENTARE GLI ERRORI SENNO SONO CAZZI
+
 
         //PARENTESI IN MATEMATICA
         if (second->getType() == syntax_analyzer::MATH_EXPRESSION) {
@@ -410,7 +411,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
             BUFFER->pop_back();
             return;
         } else {
-            Entity *ENTITY = new sequence_of_istruction(first, second);
+            Entity *ENTITY = new sequence_of_istruction(first, third);
             BUFFER->pop_back();
             BUFFER->pop_back();
             BUFFER->pop_back();
@@ -512,7 +513,7 @@ void parse_default(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
     //todo IMPORTANT COMPLETARE TUTTI I CASI
     if ((*first)->getType()==syntax_analyzer::FUNCTION_DEC and (*second)->getType()==syntax_analyzer::VAR and (*third)->getType()==syntax_analyzer::FORMAL_PARAMETHER_LIST and (*fourth)->getType()==syntax_analyzer::BLOCK){
-        Entity* ENTITY = new function_declaration((*second), (*third), (*third));
+        Entity* ENTITY = new function_declaration((*second), (*third), (*fourth));
         BUFFER->pop_back();
         BUFFER->pop_back();
         BUFFER->pop_back();
@@ -940,28 +941,4 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
     return BUFFER;
 }
 
-int main() {
-    const char *filename = R"(C:\Users\basil\OneDrive\Desktop\starfish_programming_language\test\test.txt)";
-    deque<Entity *> *res_lex = tokenize(filename);
-    print_deque(res_lex);
-    list<Entity *> *res_par = nullptr;
-    try {
-        res_par = parse(res_lex);
-    } catch (const std::exception &e) {
-        std::cerr << "Error xxx: " << e.what() << std::endl;
-    }
-    print("output:");
-    print_deque(res_par);
 
-    if(res_par->size()!=1) {
-        cout << "ERRORE: il programma non è stato scritto correttamente" << endl;
-        return 0;
-    }
-
-    res_par->front()->GET_CODE();
-
-
-
-    CORE_SYMBLETABLE->print();
-    return 0;
-}

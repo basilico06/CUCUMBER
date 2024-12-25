@@ -16,7 +16,7 @@
 #include "../codegen/codegen.cpp"
 
 /*
---------------------------------------------------------------
+-------------------------mov-------------------------------------
 dichiaraioni clasi per futuro albero di sintassi
 --------------------------------------------------------------
 */
@@ -27,9 +27,14 @@ dichiaraioni clasi per futuro albero di sintassi
  * utilizzare con cura
  *
  */
-auto VIRTUAL_MACHINE=new llvm();
+
 
 #include "../file_writer.hpp"
+
+
+
+
+
 
 
 class START_FILE : public Entity {
@@ -37,7 +42,7 @@ public:
     short type = syntax_analyzer::START_FILE;
 
     short getCategory() override { return category_syntax_analyzer::_default; }
-    [[nodiscard]] short getType() const { return type; }
+    [[nodiscard]] short getType() const override{ return type; }
 
     void add(Entity *x) override { return; }
     /*
@@ -52,18 +57,55 @@ public:
     short type;
 
     short getCategory() override { return category_syntax_analyzer::_default; }
-    short getType() const { return type; }
+    [[nodiscard]]short getType() const override { return type; }
     token *TOKEN;
 
-    void add(Entity *x) { return; }
+    void add(Entity *x) override {  }
 
-    datatype(token *token) {
+    explicit datatype(token *token) {
         this->type = syntax_analyzer::DATATYPE;
         this->TOKEN = token;
     }
 
     string* get_name() {
         return &this->TOKEN->text;
+    }
+};
+
+class stringlit : public Entity {
+public:
+
+    ENUM_TIPO_VARIABILE get_tipo_operazione() override {
+        return ENUM_TIPO_VARIABILE::STRING;
+    }
+
+
+
+    short type;
+    SymbleTable_Row* tipo_variabile_row=nullptr;
+    short getCategory() { return category_syntax_analyzer::_real; }
+
+    short getType() const { return type; }
+    token *TOKEN;
+
+    string *get_name() {
+        return &this->TOKEN->text;
+    }
+
+    stringlit(token *token) {
+
+        this->type = syntax_analyzer::CONSTANT;
+        this->TOKEN = token;
+
+    }
+
+    string GET_CODE() override {
+        output->writeLineWithTab("mov rax , " + to_string(this->TOKEN->text.length()));
+        output->writeLineWithTab("call alloc");
+        for (int i = 0; i < this->TOKEN->text.length(); i++) {
+            output->writeLineWithTab("mov byte [rax + " + to_string(i) + "] , " + to_string((int)this->TOKEN->text[i]));
+        }
+        return "rax";
     }
 };
 
@@ -82,6 +124,7 @@ public:
     }
 
 
+
     ENUM_TIPO_VARIABILE get_tipo_operazione() override {
         if (this->tipo_variabile!=ENUM_TIPO_VARIABILE::NONE_VAR) {
             return this->tipo_variabile;
@@ -95,15 +138,22 @@ public:
         return CORE_SYMBLETABLE->get(&this->TOKEN->text);
     }
 
-
-
-
-
     void add(Entity *x) { return; }
 
     var(token *token) {
+
         this->type = syntax_analyzer::VAR;
         this->TOKEN = token;
+
+    }
+
+    string GET_CODE() override {
+        cout<<"ciao"<<endl;
+        int x =LLVM.get_stack_offset_from_a_var(&TOKEN->text);
+        cout << "#############----------------" << x << "----"<< LLVM.temp_offset << endl;
+        string* alc=get_alloc_from_size(get_size_from_tipo_variabile(LLVM.get_tipo_variabile(&TOKEN->text)));
+
+        return string(*alc+" [ rsp + " + to_string(x-get_size_from_tipo_variabile(LLVM.get_tipo_variabile(&TOKEN->text)))+ " ]");
     }
 };
 
@@ -124,6 +174,10 @@ public:
 
     void add(Entity *x) { return; }
 
+    std::string *get_name() override {
+        return &this->TOKEN->text;
+    }
+
     token* get_token()override {
         return this->TOKEN;
     }
@@ -135,6 +189,10 @@ public:
     explicit constant(token *token) {
         this->type = syntax_analyzer::CONSTANT;
         this->TOKEN = token;
+    }
+
+    string GET_CODE() override {
+        return this->TOKEN->text;
     }
 };
 
@@ -189,6 +247,18 @@ public:
     plus_minus(token *token) {
         this->type = syntax_analyzer::PLUS_MINUS;
         this->TOKEN = token;
+    }
+
+    string* get_name() override {
+        return &this->TOKEN->text;
+    }
+
+    string GET_CODE() override {
+        if(TOKEN->text=="+"){
+            return "add";
+        }else{
+            return "sub";
+        }
     }
 };
 
@@ -607,6 +677,15 @@ public:
         this->add_to_symble_table(return_var);
     }
 
+    string GET_CODE() override {
+        string* reg=get_register_from_size(get_size_from_tipo_variabile(this->return_var->get_tipo_operazione()));
+        string temp= "mov "+ *reg + ", "+ return_var->GET_CODE();
+        output->writeLineWithTab( "; return statment -> mette in una derivazione di eax ");
+            cout << temp<< endl;;
+        output->writeLineWithTab(temp);
+        return "";
+    }
+
 };
 
 class cycle_sign : public Entity {
@@ -776,6 +855,18 @@ public:
     mul_div(token *token) {
         this->type = syntax_analyzer::MUL_DIV;
         this->TOKEN = token;
+    }
+
+    std::string *get_name() override {
+        return &TOKEN->text;
+    }
+
+    string GET_CODE() override {
+        if(TOKEN->text=="*"){
+            return "mul";
+        }else{
+            return "div";
+        }
     }
 };
 
@@ -1010,13 +1101,16 @@ void add_to_symble_table() {
         return;
     }
     this->tipo_variabile = get_tipo_variabile_from_string(*this->left->get_name());
-    CORE_SYMBLETABLE->insert_at_actual_node(
-        this->right->get_name(),
-        new SymbleTable_Row_Variabile(
+    this->oggetto_puntato= new SymbleTable_Row_Variabile(
             this->right->get_name(),
             tipo_variabile,
-            CORE_SYMBLETABLE->actual_node->allocate_position(get_size_from_tipo_variabile(tipo_variabile))
-            ));
+            CORE_SYMBLETABLE->actual_node->allocate_position(
+                get_size_from_tipo_variabile(tipo_variabile))
+            );
+    CORE_SYMBLETABLE->insert_at_actual_node(
+        this->right->get_name(),
+        oggetto_puntato
+        );
 
 }
 
@@ -1029,6 +1123,8 @@ public:
     }
 
     short getType() const { return type; }
+
+    SymbleTable_Row_Variabile* oggetto_puntato;
     Entity *left;
     Entity *right;
     ENUM_TIPO_VARIABILE tipo_variabile=ENUM_TIPO_VARIABILE::NONE_VAR;
@@ -1045,7 +1141,16 @@ public:
         this->add_to_symble_table();
     }
 
+    string GET_CODE() override {
+        cout<< "";
+        output->writeLineWithTab("; ALLOCATION di " + *this->right->get_name() +  "in posizione : " + to_string(this->oggetto_puntato->get_posizione()));
+        return this->right->GET_CODE();
 
+    }
+
+    string *get_name() override {
+        return this->right->get_name();
+    }
 };
 
 class int_modifier : public Entity {
@@ -1078,15 +1183,34 @@ public:
 };
 
 class function_call : public Entity {
+    void check() {
+        string *nome_funzione = SymbleTable_Row_Funzione::hash_nome_variabile(this->IDENTIFIER->get_name(), this->PARAMATHER->get_string_from_list(), ENUM_TIPO_VARIABILE::NONE_VAR);
+        cout<<*nome_funzione<< endl;
+        CORE_SYMBLETABLE->print();
+        this->funzione_puntata=CORE_SYMBLETABLE->actual_node->get(nome_funzione);
+
+        if(this->funzione_puntata== nullptr) {
+            //TODO errore funzione non dichiarata
+            cout<<"errore funzione non dichiarata"<< endl;
+            exit(0);
+        }
+
+    }
+
 public:
     short type;
 
     short getCategory() {
-
+        return category_syntax_analyzer::_default;
     }
 
+    SymbleTable_Row* funzione_puntata;
     Entity *IDENTIFIER;
     Entity *PARAMATHER;
+
+    ENUM_TIPO_VARIABILE get_tipo_operazione() override {
+        return this->funzione_puntata->get_tipo();
+    }
 
     const short layer = 3;
     short getType() const { return type; }
@@ -1095,13 +1219,22 @@ public:
         this->IDENTIFIER = IDENTIFIER;
         this->PARAMATHER = PARAMETHER;
         this->type = syntax_analyzer::FUNCTION_CALL;
-
+        check();
     }
-
-
 
     void add(Entity *x) {
         return;
+    }
+
+    string GET_CODE() override {
+        cout<<"function_call"<<endl;
+        cout<< *this->get_name()<<endl;
+        output->writeLineWithTab("; CALL FUNCTION " + *this->get_name());
+        output -> writeLineWithTab("mov rbx, rsp");
+        this->PARAMATHER->GET_CODE();
+
+        output->writeLineWithTab("call " + *this->get_name());
+        return *get_register_from_size(get_size_from_tipo_variabile(get_tipo_operazione()));
     }
 
     string* get_name() override {
@@ -1111,8 +1244,10 @@ public:
 
 class function_declaration : public Entity {
     void add_to_symble_table(string* identifier, string* parametri, ENUM_TIPO_VARIABILE return_enum_tipo_variabile) {
+
         cout<<"t0"<<endl;
         this->nome_hash=SymbleTable_Row_Funzione::hash_nome_variabile(identifier, parametri, return_enum_tipo_variabile);
+        cout<< *nome_hash;
 
         if(CORE_SYMBLETABLE->actual_node->get_up_layer()->map.contains(*nome_hash)) {
             //TODO errore nome variabile gia dichierata a livello locale
@@ -1133,6 +1268,7 @@ class function_declaration : public Entity {
             nome_hash,
             riga_puntata
             );
+        CORE_SYMBLETABLE->print();
     }
 public:
     short type;
@@ -1145,7 +1281,7 @@ public:
     Entity *PARAMATHER;
     SymbleTable_Row_Funzione *riga_puntata;
     ENUM_TIPO_VARIABILE return_enum_tipo_variabile;
-
+    Entity* block;
     [[nodiscard]]
 
     short getType() const { return type; }
@@ -1154,25 +1290,35 @@ public:
 
     function_declaration(Entity *identify, Entity *paramether, Entity* block) {
         cout<<"t33"<< CORE_SYMBLETABLE->actual_node->return_type->get_tipo() <<endl ;
+
         add_to_symble_table(identify->get_name(), paramether->get_string_from_list(),CORE_SYMBLETABLE->actual_node->return_type->get_tipo());
+
         cout<<"t2"<<endl;
+        this->block=block;
         this->PARAMATHER = paramether;
         this->type = syntax_analyzer::FUNCTION_DECLARATION;
     }
 
 
-    void GET_CODE() override {
+    string GET_CODE() override {
         cout<<"function_declaration"<<endl;
 
         output->writeLine(*this->nome_hash+":");
-        output->writeLine("sub rsp, " + this->riga_puntata->get_oggetto_puntato()->lenght);
+        string x("sub rsp, " + to_string(this->riga_puntata->get_oggetto_puntato()->lenght));
+        LLVM.stack_adjust(this->riga_puntata->get_oggetto_puntato());
+        output->writeLineWithTab(x);
+
+        this->block->GET_CODE();
 
 
         // todo rest of the code
 
 
-        output->writeLine("add rsp, " + this->riga_puntata->get_oggetto_puntato()->lenght);
-        output->writeLine("ret");
+        output->writeLineWithTab("add rsp, " + to_string(this->riga_puntata->get_oggetto_puntato()->lenght));
+        output->writeLineWithTab("ret");
+        output->writeLineWithTab("");
+        output->writeLineWithTab("");
+        return "";
 
     }
 };
@@ -1312,6 +1458,7 @@ public:
 };
 
 class real_paramether_list : public Entity {
+
 public:
     short type;
 
@@ -1332,6 +1479,43 @@ public:
         this->PARAMETHER = new deque<Entity *>();
         this->PARAMETHER->push_back(x);
         this->type = syntax_analyzer::REAL_PARAMETHER_LIST;
+
+    }
+
+    string *get_string_from_list() override {
+        string *temp = new string();
+
+        for (auto x : *PARAMETHER) {
+            temp->append(to_string(x->get_tipo_operazione()));
+        }
+
+        return temp;
+    }
+
+    string GET_CODE() override {
+        // pietro per favore ottimizzala
+        // ha una complessita calcolata di n^4
+
+        output->writeLineWithTab("; paramether");
+        short numberparamether= 0;
+        output->writeLineWithTab(" mov rbx, rsp");
+        short size=8;
+        for (const auto x : *PARAMETHER) {
+            size= size+ get_size_from_tipo_variabile(x->get_tipo_operazione());
+        }
+        output->writeLineWithTab("sub rsp, "+ to_string(size));
+        short offset=8;
+        LLVM.temp_offset=8;
+        for(auto x:*PARAMETHER) {
+            output->writeLineWithTab("mov  "+ *get_alloc_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())) +"[rsp+"+to_string(size-offset-get_size_from_tipo_variabile(x->get_tipo_operazione()))+"] , "+ x->GET_CODE());
+            offset=offset+get_size_from_tipo_variabile(x->get_tipo_operazione());
+            LLVM.temp_offset=LLVM.temp_offset+get_size_from_tipo_variabile(x->get_tipo_operazione());
+
+        }
+        output->writeLineWithTab("add rsp, "+ to_string(size));
+        LLVM.temp_offset=0;
+        output->writeLineWithTab("; parametri conclusi");
+        return "";
     }
 };
 
@@ -1345,7 +1529,16 @@ public:
 
     block(deque<Entity *> *temp) {
         this->SEQUENZE_OF_ISTRUCTION = temp;
+        cout<<"ooooooooooooooooooooooooooooooooooooooooooooooooo"<< endl;
+    }
 
+    string GET_CODE() override {
+        cout<<"block"<<endl;
+        cout<<SEQUENZE_OF_ISTRUCTION->size();
+        for(auto x:*SEQUENZE_OF_ISTRUCTION) {
+            x->GET_CODE();
+        }
+        return "";
     }
 };
 
@@ -1425,6 +1618,64 @@ public:
 
     deque<Entity *> * get_deque() override {
         return &this->EXPRESSION;
+
+    }
+
+    std::string *get_name() override {
+        return new string("math_expression");
+    }
+
+    string GET_CODE() override {
+
+        deque<Entity*>::iterator it= this->EXPRESSION.begin();
+        list<Entity*> stack;
+        short element_in_stack=0;
+        output->writeLineWithTab("");
+        output->writeLineWithTab("; MATH EXPRESSION");
+        output->writeLineWithTab("");
+        for(;it!=this->EXPRESSION.end(); ++it) {
+            if(it.operator*()->getCategory()==category_syntax_analyzer::_math_symbol) {
+
+                if (stack.empty()) {
+                    output->writeLineWithTab("pop rcx");
+                    LLVM.temp_offset=LLVM.temp_offset-8;
+                    element_in_stack--;
+                }else {
+                    output->writeLineWithTab("mov ecx , "+ stack.back()->GET_CODE());
+                    stack.pop_back();
+                }
+
+
+                if (stack.empty()) {
+                    output->writeLineWithTab("pop rax");
+                    LLVM.temp_offset=LLVM.temp_offset-8;
+                    element_in_stack--;
+                }else {
+                    output->writeLineWithTab("mov eax , "+ stack.back()->GET_CODE());
+                    stack.pop_back();
+                }
+
+                if(it.operator*()->getType()==syntax_analyzer::MUL_DIV) {
+                    output->writeLineWithTab("xor rdx, rdx");
+                    output->writeLineWithTab(it.operator*()->GET_CODE() +" ecx");
+                }else if (it.operator*()->getType()==syntax_analyzer::PLUS_MINUS) {
+                    output->writeLineWithTab(it.operator*()->GET_CODE() +" eax, ecx");
+                }
+                if(it!=prev(this->EXPRESSION.end())) {
+                    LLVM.temp_offset=LLVM.temp_offset+8;
+                    output->writeLineWithTab("push rax");
+
+                }
+
+                element_in_stack++;
+            }else {
+                stack.push_back(it.operator*());
+            }
+
+        }
+
+        return "eax";
+
     }
 };
 
@@ -1498,10 +1749,26 @@ public:
     Entity *RIGHT;
 
     assign_expression(Entity *left, Entity *right) {
+        cout<< "xx";
         check(left, right);
         this->type = syntax_analyzer::ASSIGN_OPERATION;
         this->LEFT = left;
         this->RIGHT = right;
+    }
+
+    string GET_CODE() override {
+        cout<<"assign_expression"<<endl;
+        cout<< *this->LEFT->get_name();
+        output->writeLineWithTab("; ASSIGN " + *this->LEFT->get_name() + " = " + *this->RIGHT->get_name());
+        auto temp=this->RIGHT->get_tipo_operazione();
+        cout<<temp<< endl;
+
+        short x=get_size_from_tipo_variabile(temp);
+        string* reg = get_register_from_size(x);
+        output->writeLineWithTab("mov " + *reg + ", " + RIGHT->GET_CODE());
+        output->writeLineWithTab("mov "+ LEFT->GET_CODE() + ", " + *reg);
+        cout<< "ciao";
+        return "";
     }
 };
 
@@ -1527,10 +1794,11 @@ public:
         return &this->LIST_OF_ISTRUCTION;
     }
 
-    void GET_CODE() override {
+    string GET_CODE() override {
         for (auto x : this->LIST_OF_ISTRUCTION) {
             x->GET_CODE();
         }
+        return "";
     }
 };
 
@@ -1549,9 +1817,20 @@ public:
 };
 
 class for_statment : public Entity {
+    void add_to_symble_table() {
+        allocazione=CORE_SYMBLETABLE->go_to_parent_node();
+        CORE_SYMBLETABLE->insert_at_actual_node(
+        CORE_SYMBLETABLE->plain_string_for_block,
+            new SymbleTable_Row_Blocco(
+                CORE_SYMBLETABLE->actual_node,
+                allocazione
+                )
+            );
+
+    }
 public:
     short type = syntax_analyzer::FOR_STATMENT;
-
+    NODE* allocazione;
     Entity *ASSIGN;
     Entity *CONDITION;
     Entity *INCREMENT;
@@ -1562,6 +1841,7 @@ public:
         this->CONDITION = paramether->operator[](1);
         this->INCREMENT = paramether->operator[](2);
         this->BLOCK = block;
+        add_to_symble_table();
     }
 
     short getCategory() { return category_syntax_analyzer::_default; }
@@ -1678,8 +1958,13 @@ public:
         this->program=program;
     }
 
-    void GET_CODE() override {
+    string GET_CODE() override {
+        output->writeLine("section .text");
+        output->writeLine("global Start_262262, DllMain");
+        output->writeLine("DllMain:");
+        output->writeLineWithTab("ret");
         this->program->GET_CODE();
+        return "";
     }
 };
 

@@ -95,7 +95,7 @@ public:
     virtual SymbleTable_Row* oggetto_puntato() { return nullptr; } ///< Pointer to the object.
     virtual token* get_token(){return nullptr;}
     virtual string* get_string_from_list(){return nullptr;}
-    virtual void GET_CODE() { cout << "not implemented : " <<this->getType()<< endl; } ///< Gets the code.
+    virtual string GET_CODE() { cout << "not implemented : " <<this->getType()<< endl; return " "; }///< Gets the code.
     virtual void set_NODE(NODE* node) { return; } ///< Sets the node.
     virtual NODE* get_NODE() { return nullptr; } ///< Gets the node.
 

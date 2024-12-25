@@ -58,7 +58,7 @@ Entity* lex(string word) {
     
     if (char0 == '"') {
         token* x = new token(Parser::STRINGLIT, word, col, line, 'v');
-        Entity* y= new constant(x);
+        Entity* y= new stringlit(x);
         return y;
     }
     

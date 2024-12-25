@@ -13,4 +13,5 @@ add_executable(starfish_programming_language main.cpp
         src/codegen/codegen.cpp
         src/file_writer.hpp
         src/file_writer.hpp
+        src/init/init.cpp
 )

@@ -1,6 +1,8 @@
 # ninja log v6
-51	10521	7539203325434418	CMakeFiles/starfish_programming_language.dir/main.cpp.obj	b83d956817193d3f
 1467	2397	7536226138681928	starfish_programming_language.exe	a9263c3ca190e5a1
-257	6483	7562443713154072	CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj	687665e7bd04a4ad
+51	10521	7539203325434418	CMakeFiles/starfish_programming_language.dir/main.cpp.obj	b83d956817193d3f
+26	3779	7567628563675396	CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj	914ac6eb2b814240
 277	3333	7562443713349741	CMakeFiles/starfish_programming_language.dir/src/file_writer.cpp.obj	e86bff87880a7dff
-231	4079	7562443712895303	CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj	914ac6eb2b814240
+36	7818	7567628563781367	CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj	687665e7bd04a4ad
+45	538	7568196523836290	build.ninja	ade3a44c8d8eef11
+69	7810	7567628564104952	CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj	3ffe5f132fd4aa1
