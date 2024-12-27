@@ -3,7 +3,7 @@ project(starfish_programming_language)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(starfish_programming_language main.cpp
+add_executable(starfish_programming_language
         src/lexer/lexer_util.hpp
         src/syntax_analyzer/syntax_analyzer.cpp
         src/parser/parser.cpp
