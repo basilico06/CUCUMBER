@@ -881,9 +881,26 @@ inline string* get_alloc_from_size(short x) {
             exit(0);
     }
 
+}
 
-
-
+inline string* get_condition_from_string(short x) {
+    switch (x) {
+        case Parser::EQUAL:
+            return new string("je");
+        case Parser::NOTEQUAL:
+            return new string("jne");
+        case Parser::LESSTHAN:
+            return new string("jl");
+        case Parser::GREATERTHAN:
+            return new string("jg");
+        case Parser::LESSTHANEQUAL:
+            return new string("jle");
+        case Parser::GREATERTHANEQUAL:
+            return new string("jge");
+        default:
+            cout << "errore condizione non esistente" << endl;
+            exit(0);
+    }
 }
 
 

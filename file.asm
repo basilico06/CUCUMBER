@@ -14,15 +14,15 @@ extern HeapAlloc
 extern Start_262262
 
 section .bss
+
     StandardHandle resq 1
     Written        resq 1
     allocated_memory resq 1
     heap_handle    resq 1
-
+    
 section .text
 
 global Start
-
 alloc:
     sub  RSP, 32                         ; Shadow space
     mov   rcx, [heap_handle]              ; 1° parametro: Handle dell'heap
@@ -97,10 +97,7 @@ print_str:
     mov   qword [RSP + 4 * 8], NULL                ; 5th parameter
     call  WriteFile                                ; Output can be redirect to a file using >
     add   RSP, 48                                  ; Remove the 48 bytes
-    ret    
-
-
-
+    ret
 
 add_262262_262:
     sub RSP, 32
@@ -129,11 +126,7 @@ Start:
     ; Allocate memory
     
 
-    
-
-
-	
-    
+        
 	; CALL FUNCTION Start_262262
 	
 

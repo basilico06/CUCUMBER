@@ -1,11 +1,14 @@
 method add (int x, int y) {
-    int c= x+y;
-    int d;
-    return c
+    int a=11;
+    semmai(x==0) {
+        a=0;
+        a = 0
+    };
+    return a
 };
 
 method Start (int x, int y) {
-    int b= add(5,6);
+    int b= add(0,6);
     int a = 7+8;
     return b
 }

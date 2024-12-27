@@ -215,6 +215,11 @@ public:
     short getType() const { return type; }
     token *TOKEN;
 
+    token* get_token()override {
+        return this->TOKEN;
+    }
+
+
     void add(Entity *x) { return; }
 
     cond_operand(token *token) {
@@ -1050,6 +1055,14 @@ public:
         this->check();
         this->type = syntax_analyzer::SIMPLE_CONDITION;
     }
+
+    string GET_CODE() override {
+        output->writeLineWithTab("; SIMPLE CONDITION");
+        string* reg=get_register_from_size(get_size_from_tipo_variabile(this->left->get_tipo_operazione()));
+        output->writeLineWithTab("mov "+ *reg + ", "+ left->GET_CODE());
+        output->writeLineWithTab("cmp "+ *reg + ", "+ right->GET_CODE());
+        return *get_condition_from_string(this->center->get_token()->category);
+    }
 };
 
 class object_allocation: public Entity{
@@ -1313,7 +1326,7 @@ public:
 
         // todo rest of the code
 
-
+        LLVM.remove_actual_node_function();
         output->writeLineWithTab("add rsp, " + to_string(this->riga_puntata->get_oggetto_puntato()->lenght));
         output->writeLineWithTab("ret");
         output->writeLineWithTab("");
@@ -1877,6 +1890,24 @@ public:
 
     short getCategory() { return category_syntax_analyzer::_default; }
     short getType() const { return type; }
+
+    string GET_CODE() override {
+        int ifn = LLVM.if_index;
+        LLVM.if_index++;
+        int else_n = LLVM.if_index;
+        LLVM.if_index++;
+
+        LLVM.stack_adjust(this->allocazione);
+        output->writeLineWithTab("; IF STATMENT");
+        output->writeLineWithTab(this->CONDITION->GET_CODE() + " ___jump_if_"+ to_string(ifn));
+        output->writeLineWithTab("jmp ___jump_end_"+ to_string(else_n));
+        output->writeLineWithTab("___jump_if_"+ to_string(ifn)+":");
+        this->BLOCK->GET_CODE();
+        output->writeLineWithTab("___jump_end_"+ to_string(else_n)+":");
+        LLVM.remove_actual_node_function();
+
+        return "";
+    }
 };
 
 
@@ -1964,6 +1995,8 @@ public:
         output->writeLine("DllMain:");
         output->writeLineWithTab("ret");
         this->program->GET_CODE();
+        
+        cout << LLVM.stack_offset << endl;
         return "";
     }
 };

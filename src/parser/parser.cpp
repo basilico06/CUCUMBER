@@ -465,7 +465,7 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
         if (first->getType() == syntax_analyzer::IF_DECLARATION) {
 
-            if (second->getType() == syntax_analyzer::SIMPLE_CONDITION) {
+            if (second->getType() == syntax_analyzer::SIMPLE_CONDITION and third->getType() == syntax_analyzer::BLOCK) {
                 Entity *ENTITY = new if_statment(second, third);
                 BUFFER->pop_back();
                 BUFFER->pop_back();
