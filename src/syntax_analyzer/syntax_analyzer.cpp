@@ -100,14 +100,130 @@ public:
     }
 
     string GET_CODE() override {
-        output->writeLineWithTab("mov rax , " + to_string(this->TOKEN->text.length()));
+        output->writeLineWithTab("mov rax , " + to_string(this->TOKEN->text.length()-1 + 4));
         output->writeLineWithTab("call alloc");
-        for (int i = 0; i < this->TOKEN->text.length(); i++) {
-            output->writeLineWithTab("mov byte [rax + " + to_string(i) + "] , " + to_string((int)this->TOKEN->text[i]));
+        output->writeLineWithTab("mov dword [rax] , " + to_string(this->TOKEN->text.length()-1));
+        for (int i = 1; i < this->TOKEN->text.length(); i++) {
+            output->writeLineWithTab("mov byte [rax  + 4 + " + to_string(i-1) + "] ," +to_string(static_cast<int>(this->TOKEN->text[i]) ));
         }
         return "rax";
     }
 };
+
+class colon : public Entity {
+public:
+    short type= syntax_analyzer::COLON;
+
+    short getCategory() {
+        return category_syntax_analyzer::_default;
+    }
+
+    [[nodiscard]] short getType() const override { return type; }
+    token *TOKEN;
+
+    void add(Entity *x) override {};
+
+    explicit colon(token *token) {
+        this->TOKEN = token;
+    }
+};
+
+class print_dec: public Entity {
+    public:
+
+    short type=syntax_analyzer::PRINT_DEC;
+
+    short getCategory() {
+        return category_syntax_analyzer::_default;
+    }
+
+    short getType() const override { return type; }
+    token *TOKEN;
+
+    void add(Entity *x) override { return; }
+
+    explicit print_dec(token *token){
+        this->TOKEN = token;
+    }
+};
+
+class print_statment : public Entity {
+public:
+    short const type= syntax_analyzer::PRINT_STATMENT;
+    deque<Entity*>* print_list;
+
+    short getCategory() {
+        return category_syntax_analyzer::_default;
+    }
+
+    short getType() const override { return type; }
+    token *TOKEN;
+
+    void add(Entity *x) override { return; }
+
+    explicit print_statment(deque<Entity *> *print_list)
+        : print_list(print_list) {
+    }
+
+    explicit print_statment(Entity* print_list){
+        print_list->get_tipo_operazione();
+        this->print_list= new deque<Entity*>();
+        this->print_list->push_back(print_list);
+    }
+
+
+    string GET_CODE() override {
+        for (auto &i : *print_list) {
+            cout<<"annk";
+            string temp = i->GET_CODE();
+            cout<< temp<<endl;
+            auto res_llvm=LLVM.get_tipo_variabile(i->get_name());
+
+
+            if (LLVM.get_tipo_variabile(i->get_name())!= ENUM_TIPO_VARIABILE::NONE_VAR) {
+                if(res_llvm==ENUM_TIPO_VARIABILE::STRING){
+                    output->writeLineWithTab("mov "+ *get_register_from_size(res_llvm)+", " + temp);
+                    output->writeLineWithTab("mov rdx , rax");
+                    output->writeLineWithTab("add rdx, 4");
+                    output->writeLineWithTab("mov r8d , [rax]");
+                    output->writeLineWithTab("call print_str");
+                    continue;
+                }
+                if(res_llvm==ENUM_TIPO_VARIABILE::INT){
+                    output->writeLineWithTab("mov eax, " + temp);
+                    output->writeLineWithTab("call print_unsigned_int");
+                    output->writeLineWithTab("mov rdx , rax");
+                    output->writeLineWithTab("mov r8d , 20");
+                    output->writeLineWithTab("call print_str");
+                    continue;
+                }
+            }
+
+
+            if(i->get_tipo_operazione() == ENUM_TIPO_VARIABILE::INT){
+
+                output->writeLineWithTab("mov edx, " + temp);
+                output->writeLineWithTab("call print_unsigned_int");
+                output->writeLineWithTab("mov rdx , rax");
+                output->writeLineWithTab("mov r8d , 20");
+                output->writeLineWithTab("call print_str");
+                continue;
+            }
+
+            if(i->get_tipo_operazione()==ENUM_TIPO_VARIABILE::STRING) {
+                output->writeLineWithTab("mov rax, " + temp);
+                output->writeLineWithTab("mov rdx , rax");
+                output->writeLineWithTab("add rdx, 4");
+                output->writeLineWithTab("mov r8d , [rax]");
+                output->writeLineWithTab("call print_str");
+            }
+            fin_2:
+        }
+        return "";
+    }
+
+};
+
 
 class var : public Entity {
 public:
@@ -148,7 +264,7 @@ public:
     }
 
     string GET_CODE() override {
-        cout<<"ciao"<<endl;
+        cout<<"ciao22"<<endl;
         int x =LLVM.get_stack_offset_from_a_var(&TOKEN->text);
         cout << "#############----------------" << x << "----"<< LLVM.temp_offset << endl;
         string* alc=get_alloc_from_size(get_size_from_tipo_variabile(LLVM.get_tipo_variabile(&TOKEN->text)));
@@ -508,6 +624,7 @@ public:
         this->TOKEN = token;
     }
 };
+
 
 class if_declaration : public Entity {
 public:
@@ -1518,11 +1635,12 @@ public:
         }
         output->writeLineWithTab("sub rsp, "+ to_string(size));
         short offset=8;
-        LLVM.temp_offset=8;
+        LLVM.temp_offset+=size;
         for(auto x:*PARAMETHER) {
-            output->writeLineWithTab("mov  "+ *get_alloc_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())) +"[rsp+"+to_string(size-offset-get_size_from_tipo_variabile(x->get_tipo_operazione()))+"] , "+ x->GET_CODE());
+            output->writeLineWithTab("mov "+ *get_register_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())) + ", "+ x->GET_CODE());
+            output->writeLineWithTab("mov  "+ *get_alloc_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())) +"[rsp+"+to_string(size-offset-get_size_from_tipo_variabile(x->get_tipo_operazione()))+"] , "+ *get_register_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())));
             offset=offset+get_size_from_tipo_variabile(x->get_tipo_operazione());
-            LLVM.temp_offset=LLVM.temp_offset+get_size_from_tipo_variabile(x->get_tipo_operazione());
+
 
         }
         output->writeLineWithTab("add rsp, "+ to_string(size));
@@ -1990,6 +2108,7 @@ public:
     }
 
     string GET_CODE() override {
+        output->writeLineWithTab("extern print_str, alloc, print_unsigned_int");
         output->writeLine("section .text");
         output->writeLine("global Start_262262, DllMain");
         output->writeLine("DllMain:");

@@ -1,6 +1,8 @@
 #include "../lexer/lexer.hpp"
 #include "../syntax_analyzer/syntax_analyzer_util.cpp"
 #include <deque>
+#include <valarray>
+
 #include "../symble_table/symble_table.cpp"
 #include  "../file_writer.hpp"
 
@@ -192,6 +194,23 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         return;
     }
 
+    if (first->getType()== syntax_analyzer::PRINT_DEC and second ->getType()==syntax_analyzer::COLON and (third->getType()==syntax_analyzer::VAR or third->getType()==syntax_analyzer::CONSTANT ) ){
+        Entity* ENTITY = new print_statment(third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
+    if (first->getType()== syntax_analyzer::PRINT_DEC and second->getType()==syntax_analyzer::COLON and third->getType()==syntax_analyzer::SEQUENCE_OF_ENTITY) {
+        Entity* ENTITY= new print_statment(third->get_deque());
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
 
 
     //* declaration + comma + declaration

@@ -39,6 +39,7 @@ class syntax_analyzer {
         static const short COND_OPERAND = 455;
         static const short BOOLEAN_OPERAND = 456;
         static const short COMMA = 457;
+        static const short COLON = 458;
         static const short ASSIGN_OPERAND = 458;
         static const short SEMICOLON = 459;
 
@@ -80,6 +81,8 @@ class syntax_analyzer {
         static const short IF_STATMENT=612;
         static const short WHILE_STATMENT=613;
         static const short RETURN_STATEMENT=614;
+        static const short PRINT_DEC=615;
+        static const short PRINT_STATMENT=616;
 
         static const short FORMAL_PARAMETHER_LIST = 701;
         static const short REAL_PARAMETHER_LIST = 702;

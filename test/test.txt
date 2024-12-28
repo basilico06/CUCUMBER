@@ -1,16 +1,15 @@
-method add (int x, int y) {
-    int a=11;
-    semmai(x==0) {
-        a=0;
-        a = 0
-    };
-    return a
+method AREA_QUADRATO (int x, int y) {
+    int z = x * y;
+    return z
 };
 
 method Start (int x, int y) {
-    int b= add(0,6);
-    int a = 7+8;
-    return b
+    int h=6;
+    int l=5;
+    int res = AREA_QUADRATO(l, h);
+
+    print: "the base of the rectangle is ", l, " and its height is  ", h , "  and its area is ", res;
+    return res
 }
 
 

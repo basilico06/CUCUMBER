@@ -83,6 +83,11 @@ Entity* lex(string word) {
     }
     
     if (Parser::isalpha(char0int)) {
+        if(word== "print") {
+            token *x = new token(Parser::PRINT, word, col, line);
+            Entity* y= new print_dec(x);
+            return y;
+        }
         if (word=="array"){
             token* x = new token(Parser::ARRAY, word, col, line);
             Entity* y= new array_dec(x);
@@ -265,6 +270,11 @@ Entity* lex(string word) {
     }
     
     if (char0int > 57 && char0int < 65) {
+        if (word == ":") {
+            token* x = new token(Parser::COLON, word, col, line);
+            Entity* y= new colon(x);
+            return y;
+        }
         if (word == ";") {
             token* x = new token(Parser::SEMICOLON, word, col, line, 't' );
             Entity* y= new semicolon(x);
@@ -423,7 +433,7 @@ deque<Entity*>* tokenize(const char* filename) {
             if (in_string==true) {
                 in_string = false;
                 if (buffer_len > 0) {
-                    buffer += c;
+
                     tokens->push_back(lex(buffer));
                     buffer = "";
                     buffer_len = 0;

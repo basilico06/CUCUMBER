@@ -143,8 +143,9 @@ public:
             }
         }
 
+        return ENUM_TIPO_VARIABILE::NONE_VAR;
         //todo errore variabile non esistente
-        exit(0);
+
     }
 
 };

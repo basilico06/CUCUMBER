@@ -22,7 +22,7 @@ section .bss
     
 section .text
 
-global Start
+global Start, print_unsigned_int, print_str, alloc, xor_allocazione, add_262262_262
 alloc:
     sub  RSP, 32                         ; Shadow space
     mov   rcx, [heap_handle]              ; 1° parametro: Handle dell'heap
@@ -129,15 +129,15 @@ Start:
         
 	; CALL FUNCTION Start_262262
 	
-
+    
 
 	call Start_262262
 
 
-                      ; Save the return value
     call print_unsigned_int
-    mov   rdx, rax
-    mov r8, 20                    ; Length of string
+    mov byte [rax], 10            
+    mov r8, 20  
+    mov rdx, rax                         ; Pointer to string
     call  print_str
 
 	add rsp, 16

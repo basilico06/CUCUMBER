@@ -66,7 +66,8 @@ class Parser {
     static constexpr short METHOD = 308;
     static constexpr short POW=309;
     static constexpr short ARRAY=310;
-
+    static constexpr short PRINT=311;
+    static constexpr short COLON=312;
     
 
 
