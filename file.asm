@@ -5,16 +5,21 @@
 NULL              EQU 0
 STD_OUTPUT_HANDLE EQU -11
 
-extern GetStdHandle
+extern GetStdHandle, ReadConsoleA
 extern WriteFile
 extern ExitProcess
 extern GetProcessHeap
 extern HeapAlloc
-
 extern Start_262262
 
-section .bss
 
+section .data
+    inputBuffer db 128 dup(0)
+    charsRead   dd 0
+    StandardInput dq 0
+
+section .bss
+    
     StandardHandle resq 1
     Written        resq 1
     allocated_memory resq 1
@@ -22,7 +27,8 @@ section .bss
     
 section .text
 
-global Start, print_unsigned_int, print_str, alloc, xor_allocazione, add_262262_262
+
+global Start, print_unsigned_int, print_str, alloc, xor_allocazione, add_262262_262, input_func, input_to_string, string_to_int
 alloc:
     sub  RSP, 32                         ; Shadow space
     mov   rcx, [heap_handle]              ; 1° parametro: Handle dell'heap
@@ -30,6 +36,7 @@ alloc:
     xor   r8, r8                          ; 3° parametro: Flag (0 per NULL)
     call  HeapAlloc                       ; Chiama HeapAlloc
     add   RSP, 32                         ; Ripristina lo stack
+
     ret
 
 
@@ -83,8 +90,67 @@ print_unsigned_int:
     add   rsp, 32                      ; Restore the stack
     ret
 
+input_func:
+    mov  rcx, [rel StandardInput]             ; RCX = hConsoleInput
+    mov  rdx, inputBuffer      ; RDX = pointer to our buffer
+    mov  r8d, 128              ; R8D = number of chars to read (DWORD)
+    mov  r9, charsRead         ; R9  = pointer to store numberOfCharsRead
+    sub  rsp, 32               ; Reserve space for the 5th parameter and shadow
+    xor  rax, rax              ; pReserved = NULL
+    push rax
+    call ReadConsoleA
+    ADD  rsp, 40               ; Restore the stack
+    ret 
 
+input_to_string:    
+    mov rdx, [charsRead]
+    mov rax, rdx
+    mov r14d , eax
+    add rax, 4
+    
+    call alloc
 
+    mov dword [rax], r14d
+    mov rdx, rax
+    add rax, 4
+    xor rcx, rcx
+    loop_input:
+    
+    mov bl, [inputBuffer + ecx]
+    mov byte [rax  + rcx], bl
+    inc rcx
+    cmp ecx, r14d
+    jne loop_input
+    
+    mov rax, rdx
+    ret
+
+; Function: string_to_int
+; Purpose: Converts a null-terminated string in inputBuffer to an integer.
+; Assumptions:
+;   - inputBuffer points to the string.
+;   - charsRead contains the number of characters read (including newline).
+;   - The string represents a valid positive integer.
+
+string_to_int:
+    mov     r14d, [charsRead]      ; Load the number of characters read into r14d
+    sub     r14d, 2                ; Adjust for newline and null terminator
+    mov     rax, 0                 ; Initialize RAX to store the resulting integer
+    mov     ecx, 0                 ; Initialize ECX as the loop counter/index
+
+    loop_input_to_int:
+        cmp     ecx, r14d              ; Compare current index with adjusted charsRead
+        jge     end_loop                ; If index >= r14d, exit the loop
+
+        movzx   rdx, byte [inputBuffer + rcx] ; Load the current character, zero-extend to RDX
+        sub     rdx, '0'                ; Convert ASCII character to its numeric value
+        imul    rax, rax, 10            ; Multiply current result by 10
+        add     rax, rdx                 ; Add the numeric value of the current digit
+        inc     rcx                      ; Move to the next character
+        jmp     loop_input_to_int        ; Repeat the loop
+
+    end_loop:
+    ret                               ; Return with the result in RAX
 
 print_str:
     ; input 
@@ -115,8 +181,13 @@ Start:
     sub   rsp, 32                     ; Shadow space
     mov   ecx, STD_OUTPUT_HANDLE      ; Parameter: STD_OUTPUT_HANDLE
     call  GetStdHandle               ; Exit if invalid
-    mov   [rel StandardHandle], rax   ; Save handle
+    mov   [rel StandardHandle], rax   ; Save handle  
     add   rsp, 32                     ; Restore stack
+
+    mov  ecx, -10              ; STD_INPUT_HANDLE = -10
+    call GetStdHandle
+    mov  [rel StandardInput], rax
+
 
     ; Get Process Heap Handle
     call  GetProcessHeap
@@ -127,23 +198,16 @@ Start:
     
 
         
-	; CALL FUNCTION Start_262262
+
+
 	
-    
-
 	call Start_262262
-
-
-    call print_unsigned_int
-    mov byte [rax], 10            
-    mov r8, 20  
-    mov rdx, rax                         ; Pointer to string
-    call  print_str
-
-	add rsp, 16
-
     
-    xor  ecx, ecx                    ; Exit code 0
+
+	;add rsp, 16
+    ;xor rax, rax
+    
+                       ; Exit code 0
     call  ExitProcess                 ; Exit the program
 
     

@@ -83,6 +83,11 @@ Entity* lex(string word) {
     }
     
     if (Parser::isalpha(char0int)) {
+        if(word == "input") {
+            token* x = new token(Parser::INPUT, word, col, line);
+            Entity* y= new input_dec(x);
+            return y;
+        }
         if(word== "print") {
             token *x = new token(Parser::PRINT, word, col, line);
             Entity* y= new print_dec(x);

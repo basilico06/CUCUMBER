@@ -83,6 +83,8 @@ class syntax_analyzer {
         static const short RETURN_STATEMENT=614;
         static const short PRINT_DEC=615;
         static const short PRINT_STATMENT=616;
+        static const short INPUT_DEC=617;
+        static const short INPUT_STATMENT=618;
 
         static const short FORMAL_PARAMETHER_LIST = 701;
         static const short REAL_PARAMETHER_LIST = 702;

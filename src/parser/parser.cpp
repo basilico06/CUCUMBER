@@ -143,6 +143,15 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         }
     }
 
+    if(first->getType()== syntax_analyzer::INPUT_DEC and second->getType()==syntax_analyzer::COLON and third->getType()==syntax_analyzer::VAR){
+        Entity* ENTITY = new input_statment(third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
     if (first->getType()== syntax_analyzer::VAR and second->getType()==syntax_analyzer::DOT and third->getType()==syntax_analyzer::VAR){
 
         Entity* ENTITY = new propriety(first, third);

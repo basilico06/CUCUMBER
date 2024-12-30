@@ -100,12 +100,13 @@ public:
     }
 
     string GET_CODE() override {
-        output->writeLineWithTab("mov rax , " + to_string(this->TOKEN->text.length()-1 + 4));
+        output->writeLineWithTab("mov rax , " + to_string(this->TOKEN->text.length() + 4));
         output->writeLineWithTab("call alloc");
-        output->writeLineWithTab("mov dword [rax] , " + to_string(this->TOKEN->text.length()-1));
+        output->writeLineWithTab("mov dword [rax] , " + to_string(this->TOKEN->text.length()));
         for (int i = 1; i < this->TOKEN->text.length(); i++) {
             output->writeLineWithTab("mov byte [rax  + 4 + " + to_string(i-1) + "] ," +to_string(static_cast<int>(this->TOKEN->text[i]) ));
         }
+        output->writeLineWithTab("mov byte [rax  + 4 + " + to_string(TOKEN->text.length()) + "] , 0");
         return "rax";
     }
 };
@@ -182,7 +183,9 @@ public:
 
             if (LLVM.get_tipo_variabile(i->get_name())!= ENUM_TIPO_VARIABILE::NONE_VAR) {
                 if(res_llvm==ENUM_TIPO_VARIABILE::STRING){
+
                     output->writeLineWithTab("mov "+ *get_register_from_size(res_llvm)+", " + temp);
+                    output->writeLineWithTab("xor r8, r8");
                     output->writeLineWithTab("mov rdx , rax");
                     output->writeLineWithTab("add rdx, 4");
                     output->writeLineWithTab("mov r8d , [rax]");
@@ -190,10 +193,13 @@ public:
                     continue;
                 }
                 if(res_llvm==ENUM_TIPO_VARIABILE::INT){
+                    output->writeLineWithTab("xor rax, rax");
                     output->writeLineWithTab("mov eax, " + temp);
+                    output->writeLineWithTab("xor r8, r8");
                     output->writeLineWithTab("call print_unsigned_int");
                     output->writeLineWithTab("mov rdx , rax");
-                    output->writeLineWithTab("mov r8d , 20");
+
+                    output->writeLineWithTab("mov r8 , 21");
                     output->writeLineWithTab("call print_str");
                     continue;
                 }
@@ -201,9 +207,10 @@ public:
 
 
             if(i->get_tipo_operazione() == ENUM_TIPO_VARIABILE::INT){
-
-                output->writeLineWithTab("mov edx, " + temp);
+                output->writeLineWithTab("xor rax, rax");
+                output->writeLineWithTab("mov eax, " + temp);
                 output->writeLineWithTab("call print_unsigned_int");
+                output->writeLineWithTab("xor r8, r8");
                 output->writeLineWithTab("mov rdx , rax");
                 output->writeLineWithTab("mov r8d , 20");
                 output->writeLineWithTab("call print_str");
@@ -211,7 +218,9 @@ public:
             }
 
             if(i->get_tipo_operazione()==ENUM_TIPO_VARIABILE::STRING) {
+
                 output->writeLineWithTab("mov rax, " + temp);
+                output->writeLineWithTab("xor r8, r8");
                 output->writeLineWithTab("mov rdx , rax");
                 output->writeLineWithTab("add rdx, 4");
                 output->writeLineWithTab("mov r8d , [rax]");
@@ -2028,6 +2037,69 @@ public:
     }
 };
 
+class input_dec: public Entity {
+public:
+
+    short type=syntax_analyzer::INPUT_DEC;
+
+    short getCategory() {
+        return category_syntax_analyzer::_default;
+    }
+
+    short getType() const override { return type; }
+    token *TOKEN;
+
+    void add(Entity *x) override { return; }
+
+    explicit input_dec(token *token){
+        this->TOKEN = token;
+    }
+
+};
+
+class input_statment: public Entity {
+public:
+    short type=syntax_analyzer::INPUT_STATMENT;
+
+    short getCategory() {
+        return category_syntax_analyzer::_default;
+    }
+
+    short getType() const override { return type; }
+    Entity* VAR;
+
+    void add(Entity *x) override { return; }
+
+    explicit input_statment(Entity* var){
+        this->VAR = var;
+    }
+
+    string GET_CODE() override {
+        output->writeLineWithTab("; INPUT STATMENT");
+        output->writeLineWithTab("call input_func");
+        switch (LLVM.get_tipo_variabile(this->VAR->get_name())) {
+            case ENUM_TIPO_VARIABILE::INT:
+                output->writeLineWithTab("call string_to_int");
+                output->writeLineWithTab("mov "+ this->VAR->GET_CODE() + ", eax");
+                break;
+            case ENUM_TIPO_VARIABILE::FLOAT:
+                output->writeLineWithTab(";not implemented");
+                break;
+            case ENUM_TIPO_VARIABILE::STRING:
+                output->writeLineWithTab("call input_to_string");
+                output->writeLineWithTab("mov "+ this->VAR->GET_CODE() + ", rax");
+                break;
+            default:
+                break;
+        }
+        return "";
+    }
+
+
+
+};
+
+
 
 class while_statment : public Entity {
 public:
@@ -2108,7 +2180,7 @@ public:
     }
 
     string GET_CODE() override {
-        output->writeLineWithTab("extern print_str, alloc, print_unsigned_int");
+        output->writeLineWithTab("extern print_str, alloc, print_unsigned_int, input_func, input_to_string, string_to_int");
         output->writeLine("section .text");
         output->writeLine("global Start_262262, DllMain");
         output->writeLine("DllMain:");
@@ -2129,3 +2201,6 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////
 
 #endif
+
+
+//todo sistemare il print
