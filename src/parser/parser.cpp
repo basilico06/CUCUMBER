@@ -234,6 +234,23 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         return;
     }
 
+    if (first->getType()==syntax_analyzer::FUNCTION_DEC and second->getType()==syntax_analyzer::VAR and third->getType()==syntax_analyzer::FORMAL_PARAMETHER_LIST){
+        Entity* ENTITY = new function_declaration(second, third);
+
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
+    if (first->getType()==syntax_analyzer::FUNCTION_DECLARATION and second->getType()==syntax_analyzer::COLON and third->getType()==syntax_analyzer::BLOCK) {
+        first->add(third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        return;
+    }
+
     //* formal_list + comma + declaration
     if (first->getType() == syntax_analyzer::SEQUENCE_OF_ALLOCATION and third->getCategory() ==category_syntax_analyzer::_allocation and second->getType() == syntax_analyzer::COMMA) {
         first->add(third);
@@ -540,15 +557,7 @@ void parse_default(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
 
     //todo IMPORTANT COMPLETARE TUTTI I CASI
-    if ((*first)->getType()==syntax_analyzer::FUNCTION_DEC and (*second)->getType()==syntax_analyzer::VAR and (*third)->getType()==syntax_analyzer::FORMAL_PARAMETHER_LIST and (*fourth)->getType()==syntax_analyzer::BLOCK){
-        Entity* ENTITY = new function_declaration((*second), (*third), (*fourth));
-        BUFFER->pop_back();
-        BUFFER->pop_back();
-        BUFFER->pop_back();
-        BUFFER->pop_back();
-        BUFFER->push_back(ENTITY);
-        return;
-    }
+
 
 }
 
@@ -862,12 +871,8 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
         }
         */
 
-        if ((*ACTUAL)->getType() == syntax_analyzer::FUNCTION_DEC or (*ACTUAL)->getType() == syntax_analyzer::CLASS_DECLARATION) {
-            CORE_SYMBLETABLE->add_node();
-        }
-
         // sottolivello della symble_table
-        if((*ACTUAL)->getType()== syntax_analyzer::IF_DECLARATION){
+        if((*ACTUAL)->getType()== syntax_analyzer::FUNCTION_DEC){
             CORE_SYMBLETABLE->add_node();
         }
 

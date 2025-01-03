@@ -1,0 +1,25 @@
+method AREA_QUADRATO (int x, int y) {
+    int z = x * y;
+    return z
+};
+
+method Start (int x, int y) {
+
+    int h;
+    int l;
+    print: "Insert the base of the rectangle : ";
+    input: h;
+    print: "Insert the height of the rectangle : ";
+    input: l;
+    int res =  AREA_QUADRATO(h, l) ;
+    print: res;
+
+    return res
+}
+
+
+
+
+
+
+

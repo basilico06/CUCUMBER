@@ -22,6 +22,7 @@ enum ENUM_INFO {
 *   @attention aggiunta compatibilita con i TOKEN
 */
 enum ENUM_TIPO_VARIABILE {
+    UNDEFINED,
     NONE_VAR,  // Renamed to avoid conflict
     INT=Parser::INTLIT,
     FLOAT=Parser::FLOATLIT,

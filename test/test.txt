@@ -1,23 +1,14 @@
-method AREA_QUADRATO (int x, int y) {
-    int z = x * y;
-    return z
++
+
+    int res = Fibonacci(x - 1, 0) + Fibonacci(x - 2, 0);
+    return res
 };
 
-method Start (int x, int y) {
-
-    int h;
-    int l;
-    print: "Insert the base of the rectangle";
-    input: h;
-    print: "Insert the height of the rectangle";
-    input: l;
-    int res = AREA_QUADRATO(l, h);
-    print:"the area of the square is ", res;
-
+method Start (int a, int b) : {
+    int res =  4 ;
+    print: res;
     return res
 }
-
-
 
 
 

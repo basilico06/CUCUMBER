@@ -565,6 +565,7 @@ public:
     [[nodiscard]] static std::string* hash_nome_variabile(string* nome, string* paramether_type, ENUM_TIPO_VARIABILE return_type ) {
         auto* x= new string(*nome);
         x->append( "_");
+        cout<<*paramether_type<<endl;
         x->append( *paramether_type);
         return x;
     }
@@ -859,13 +860,14 @@ inline string* get_register_from_size(short size) {
             return new string("RAX");
             break;
         default:
-            cout << "grandezza var sbagliata : "<< size << endl;
+            cout << "grandezza var sbagliata :: "<< size << endl;
             exit(0);
             break;
     }
 }
 
-inline string* get_alloc_from_size(short x) {
+inline string* get_alloc_from_size(short x, short i) {
+    cout << x;
     switch(x) {
         case 1:
             return new string("BYTE");
@@ -877,7 +879,7 @@ inline string* get_alloc_from_size(short x) {
             return new string("QWORD");
             break;
         default:
-            cout<< "grandezza var sbagliata : "<< x << endl;
+            cout<< "grandezza var sbagliata : "<< endl;
             exit(0);
     }
 

@@ -30,7 +30,6 @@ public:
 
 class syntax_analyzer {
     public:
-
         static const short DOT = 450;
         static const short POW = 451;
         static const short MUL_DIV = 452;

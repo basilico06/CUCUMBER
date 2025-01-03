@@ -74,7 +74,6 @@ public:
 
 
 class llvm {
-
     void stack_adjustment(const uint32_t x) {
         this->stack_offset += x;
     }
@@ -90,19 +89,24 @@ public:
     section bss_section= section();
     section data_section= section();
 
+    llvm() {
+        this->stack_adjust(CORE_SYMBLETABLE->actual_node);
+    }
+
 
     int loop_index=0;
     int if_index=0;
     uint64_t stack_offset=0;
     vector<NODE*>* actual_node_function= new vector<NODE*>();
     uint64_t temp_offset=0;
-    llvm()= default;
+
 
 
 
 
     uint64_t get_stack_offset_from_a_var( const string* nome) const
     {
+
         cout<< "----------------" <<temp_offset<<endl;
         uint64_t temp_stack_offset=0;
         auto temp_actual_node= this->actual_node_function->end();
@@ -116,8 +120,9 @@ public:
                 return ret;
             }
             temp_stack_offset+=temp_actual_node.operator*()->lenght;
-        }
 
+        }
+        cout << "non esistente"<< endl;
         //todo errore variabile non esistenteà
 
         exit(0);
@@ -142,7 +147,7 @@ public:
                 return temp_actual_node.operator*()->map[*name]->get_tipo();
             }
         }
-
+        cout<<"var non trovata"<< endl;
         return ENUM_TIPO_VARIABILE::NONE_VAR;
         //todo errore variabile non esistente
 

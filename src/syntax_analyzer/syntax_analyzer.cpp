@@ -106,7 +106,7 @@ public:
         for (int i = 1; i < this->TOKEN->text.length(); i++) {
             output->writeLineWithTab("mov byte [rax  + 4 + " + to_string(i-1) + "] ," +to_string(static_cast<int>(this->TOKEN->text[i]) ));
         }
-        output->writeLineWithTab("mov byte [rax  + 4 + " + to_string(TOKEN->text.length()) + "] , 0");
+        output->writeLineWithTab("mov byte [rax  + 4 + " + to_string(TOKEN->text.length()) +"-1] , 0");
         return "rax";
     }
 };
@@ -188,7 +188,7 @@ public:
                     output->writeLineWithTab("xor r8, r8");
                     output->writeLineWithTab("mov rdx , rax");
                     output->writeLineWithTab("add rdx, 4");
-                    output->writeLineWithTab("mov r8d , [rax]");
+                    output->writeLineWithTab("mov r8d , dword [rax]");
                     output->writeLineWithTab("call print_str");
                     continue;
                 }
@@ -223,7 +223,7 @@ public:
                 output->writeLineWithTab("xor r8, r8");
                 output->writeLineWithTab("mov rdx , rax");
                 output->writeLineWithTab("add rdx, 4");
-                output->writeLineWithTab("mov r8d , [rax]");
+                output->writeLineWithTab("mov r8d , dword [rax]");
                 output->writeLineWithTab("call print_str");
             }
             fin_2:
@@ -276,9 +276,10 @@ public:
         cout<<"ciao22"<<endl;
         int x =LLVM.get_stack_offset_from_a_var(&TOKEN->text);
         cout << "#############----------------" << x << "----"<< LLVM.temp_offset << endl;
-        string* alc=get_alloc_from_size(get_size_from_tipo_variabile(LLVM.get_tipo_variabile(&TOKEN->text)));
+        cout <<" opzione 2" << endl ;
+        auto pp=get_size_from_tipo_variabile(LLVM.get_tipo_variabile(&TOKEN->text));
 
-        return string(*alc+" [ rsp + " + to_string(x-get_size_from_tipo_variabile(LLVM.get_tipo_variabile(&TOKEN->text)))+ " ]");
+        return string(" [ rsp + " + to_string(x-pp)+ " ]");
     }
 };
 
@@ -1322,6 +1323,7 @@ public:
 };
 
 class function_call : public Entity {
+
     void check() {
         string *nome_funzione = SymbleTable_Row_Funzione::hash_nome_variabile(this->IDENTIFIER->get_name(), this->PARAMATHER->get_string_from_list(), ENUM_TIPO_VARIABILE::NONE_VAR);
         cout<<*nome_funzione<< endl;
@@ -1340,7 +1342,7 @@ public:
     short type;
 
     short getCategory() {
-        return category_syntax_analyzer::_default;
+        return category_syntax_analyzer::_real;
     }
 
     SymbleTable_Row* funzione_puntata;
@@ -1382,13 +1384,12 @@ public:
 };
 
 class function_declaration : public Entity {
-    void add_to_symble_table(string* identifier, string* parametri, ENUM_TIPO_VARIABILE return_enum_tipo_variabile) {
-
+    void add_to_symble_table(string* identifier, string* parametri ) {
         cout<<"t0"<<endl;
-        this->nome_hash=SymbleTable_Row_Funzione::hash_nome_variabile(identifier, parametri, return_enum_tipo_variabile);
+        this->nome_hash=SymbleTable_Row_Funzione::hash_nome_variabile(identifier, parametri, ENUM_TIPO_VARIABILE::NONE_VAR );
         cout<< *nome_hash;
 
-        if(CORE_SYMBLETABLE->actual_node->get_up_layer()->map.contains(*nome_hash)) {
+        if(CORE_SYMBLETABLE->actual_node->map.contains(*nome_hash)) {
             //TODO errore nome variabile gia dichierata a livello locale
 
             cout<<"errore FUNZIONE gia dichiarata a livello locale"<< endl;
@@ -1399,17 +1400,27 @@ class function_declaration : public Entity {
         riga_puntata= new SymbleTable_Row_Funzione(
                 identifier,
                 parametri,
-                return_enum_tipo_variabile,
-                CORE_SYMBLETABLE->go_to_parent_node()
+                ENUM_TIPO_VARIABILE::UNDEFINED,
+                new NODE(*CORE_SYMBLETABLE->actual_node)
                 );
 
-        CORE_SYMBLETABLE->insert_at_actual_node(
+        CORE_SYMBLETABLE->actual_node->get_up_layer()->insert(
             nome_hash,
             riga_puntata
             );
-        CORE_SYMBLETABLE->print();
+        cout<<"gscr";
+
+        cout<<"gscr";
     }
+
+    void set_row() {
+        this->riga_puntata->return_type=this->block->get_tipo_operazione();
+        this->riga_puntata->Block=this->block->get_NODE();
+        return;
+    }
+
 public:
+
     short type;
 
     short getCategory() override {
@@ -1427,15 +1438,17 @@ public:
 
 
 
-    function_declaration(Entity *identify, Entity *paramether, Entity* block) {
-        cout<<"t33"<< CORE_SYMBLETABLE->actual_node->return_type->get_tipo() <<endl ;
-
-        add_to_symble_table(identify->get_name(), paramether->get_string_from_list(),CORE_SYMBLETABLE->actual_node->return_type->get_tipo());
-
-        cout<<"t2"<<endl;
-        this->block=block;
+    function_declaration(Entity *identify, Entity *paramether) {
+        add_to_symble_table(identify->get_name(), paramether->get_string_from_list());
         this->PARAMATHER = paramether;
         this->type = syntax_analyzer::FUNCTION_DECLARATION;
+    }
+
+    void add(Entity *x) override {
+        cout<<"gscr";
+        this->block=x;
+        set_row();
+
     }
 
 
@@ -1500,6 +1513,7 @@ public:
         this->type = syntax_analyzer::SEQUENCE_OF_ALLOCATION;
         this->sequenze.push_back(left);
         this->sequenze.push_back(right);
+
     }
 
     void add(Entity *x) {
@@ -1646,8 +1660,10 @@ public:
         short offset=8;
         LLVM.temp_offset+=size;
         for(auto x:*PARAMETHER) {
+
             output->writeLineWithTab("mov "+ *get_register_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())) + ", "+ x->GET_CODE());
-            output->writeLineWithTab("mov  "+ *get_alloc_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())) +"[rsp+"+to_string(size-offset-get_size_from_tipo_variabile(x->get_tipo_operazione()))+"] , "+ *get_register_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())));
+            cout<< "ciaaaoo"<<endl;
+            output->writeLineWithTab("mov  "+ *get_alloc_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione()) ,5) +"[rsp+"+to_string(size-offset-get_size_from_tipo_variabile(x->get_tipo_operazione()))+"] , "+ *get_register_from_size(get_size_from_tipo_variabile(x->get_tipo_operazione())));
             offset=offset+get_size_from_tipo_variabile(x->get_tipo_operazione());
 
 
@@ -1664,12 +1680,21 @@ public:
     short type = syntax_analyzer::BLOCK;
     short getCategory() { return category_syntax_analyzer::_default; }
     deque<Entity *> *SEQUENZE_OF_ISTRUCTION;
+    NODE* nodo;
     short getType() const { return type; }
 
 
     block(deque<Entity *> *temp) {
         this->SEQUENZE_OF_ISTRUCTION = temp;
-        cout<<"ooooooooooooooooooooooooooooooooooooooooooooooooo"<< endl;
+        this->nodo= CORE_SYMBLETABLE->go_to_parent_node();
+    }
+
+    NODE* get_NODE() override {
+        return this->nodo;
+    }
+
+    ENUM_TIPO_VARIABILE get_tipo_operazione() override {
+        return this->nodo->return_type->get_tipo();
     }
 
     string GET_CODE() override {
@@ -1867,13 +1892,16 @@ public:
 };
 
 class assign_expression : public Entity {
-    void check(Entity* left, Entity*right){
+    void check(Entity* left, Entity*right) {
         cout<<right->getType();
         cout<<"-----------------------------------------"<<left->get_tipo_operazione() << right->get_tipo_operazione()<<endl;
-        if (left->get_tipo_operazione() != right->get_tipo_operazione()) {
-            //TODO errore
-            cout<<"ERRORE TIPO NON COMPATIBILE"<<endl;
-            exit(0);
+        if(left->get_tipo_operazione() != ENUM_TIPO_VARIABILE::UNDEFINED and right->get_tipo_operazione() != ENUM_TIPO_VARIABILE::UNDEFINED) {
+
+            if (left->get_tipo_operazione() != right->get_tipo_operazione() ) {
+                //TODO errore
+                cout<<"ERRORE TIPO NON COMPATIBILE"<<endl;
+                exit(0);
+            }
         }
     }
 public:
@@ -1903,7 +1931,12 @@ public:
         auto temp=this->RIGHT->get_tipo_operazione();
         cout<<temp<< endl;
 
-        short x=get_size_from_tipo_variabile(temp);
+        short x;
+        if(temp== ENUM_TIPO_VARIABILE::UNDEFINED) {
+            x=get_size_from_tipo_variabile(LLVM.get_tipo_variabile(LEFT->get_name()));
+        }else {
+            x=get_size_from_tipo_variabile(temp);
+        }
         string* reg = get_register_from_size(x);
         output->writeLineWithTab("mov " + *reg + ", " + RIGHT->GET_CODE());
         output->writeLineWithTab("mov "+ LEFT->GET_CODE() + ", " + *reg);
