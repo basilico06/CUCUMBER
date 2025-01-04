@@ -112,7 +112,7 @@ public:
         auto temp_actual_node= this->actual_node_function->end();
         while (temp_actual_node!=this->actual_node_function->begin()) {
             --temp_actual_node;
-            cout<< *nome    ;
+            cout<< *nome  << endl ;
             temp_actual_node.operator*()->print("-----");
             if (temp_actual_node.operator*()->contains(nome)) {
                 const uint64_t ret = temp_offset+ temp_actual_node.operator*()->lenght - temp_actual_node.operator*()->map[*nome]->get_posizione()-temp_stack_offset;

@@ -212,6 +212,15 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         return;
     }
 
+    if (first->getType()== syntax_analyzer::PRINT_DEC and second ->getType()==syntax_analyzer::COLON and third->getType()== syntax_analyzer::FUNCTION_CALL ){
+        Entity* ENTITY = new print_statment(third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
     if (first->getType()== syntax_analyzer::PRINT_DEC and second->getType()==syntax_analyzer::COLON and third->getType()==syntax_analyzer::SEQUENCE_OF_ENTITY) {
         Entity* ENTITY= new print_statment(third->get_deque());
         BUFFER->pop_back();
@@ -873,6 +882,10 @@ list<Entity *> *parse(deque<Entity *> *LIST_OF_RAW_TOKEN) {
 
         // sottolivello della symble_table
         if((*ACTUAL)->getType()== syntax_analyzer::FUNCTION_DEC){
+            CORE_SYMBLETABLE->add_node(true);
+        }
+
+        if((*ACTUAL)->getType()== syntax_analyzer::IF_DECLARATION) {
             CORE_SYMBLETABLE->add_node();
         }
 

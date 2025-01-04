@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 
     system("nasm -f win64 output.asm -o output.obj");
     system("nasm -f win64 file.asm -o programma.obj");
-    system("golink.exe /console /entry:Start kernel32.dll programma.obj output.obj");
+    system("golink.exe /console /stacksize:1000000h /entry:Start kernel32.dll programma.obj output.obj");
     system("programma.exe");
     return 0;
 

@@ -138,6 +138,10 @@ class print_dec: public Entity {
         return category_syntax_analyzer::_default;
     }
 
+    ENUM_TIPO_VARIABILE get_tipo_operazione() override {
+        return ENUM_TIPO_VARIABILE::UNDEFINED;
+    }
+
     short getType() const override { return type; }
     token *TOKEN;
 
@@ -155,6 +159,10 @@ public:
 
     short getCategory() {
         return category_syntax_analyzer::_default;
+    }
+
+    ENUM_TIPO_VARIABILE get_tipo_operazione() override{
+        return ENUM_TIPO_VARIABILE::UNDEFINED;
     }
 
     short getType() const override { return type; }
@@ -193,7 +201,7 @@ public:
                     continue;
                 }
                 if(res_llvm==ENUM_TIPO_VARIABILE::INT){
-                    output->writeLineWithTab("xor rax, rax");
+
                     output->writeLineWithTab("mov eax, " + temp);
                     output->writeLineWithTab("xor r8, r8");
                     output->writeLineWithTab("call print_unsigned_int");
@@ -815,6 +823,14 @@ public:
         output->writeLineWithTab( "; return statment -> mette in una derivazione di eax ");
             cout << temp<< endl;;
         output->writeLineWithTab(temp);
+
+        int length= 0;
+        auto it=LLVM.actual_node_function->end().operator--();
+        for (;it!=LLVM.actual_node_function->begin() and it.operator*()->is_funzione!=true; --it) {
+            length += it.operator*()->lenght;
+        }
+        output->writeLineWithTab("add rsp, "+ to_string(length));
+        output->writeLineWithTab("jmp ext___"+ *it.operator*()->get_name());
         return "";
     }
 
@@ -1416,6 +1432,7 @@ class function_declaration : public Entity {
     void set_row() {
         this->riga_puntata->return_type=this->block->get_tipo_operazione();
         this->riga_puntata->Block=this->block->get_NODE();
+        this->block->get_NODE()->name=this->nome_hash;
         return;
     }
 
@@ -1456,17 +1473,17 @@ public:
         cout<<"function_declaration"<<endl;
 
         output->writeLine(*this->nome_hash+":");
-        string x("sub rsp, " + to_string(this->riga_puntata->get_oggetto_puntato()->lenght));
-        LLVM.stack_adjust(this->riga_puntata->get_oggetto_puntato());
-        output->writeLineWithTab(x);
+
 
         this->block->GET_CODE();
 
 
         // todo rest of the code
 
+
+        output->writeLineWithTab("ext___"+*this->nome_hash+":");
         LLVM.remove_actual_node_function();
-        output->writeLineWithTab("add rsp, " + to_string(this->riga_puntata->get_oggetto_puntato()->lenght));
+        output->writeLineWithTab("add rsp, "+ to_string(this->block->get_NODE()->lenght));
         output->writeLineWithTab("ret");
         output->writeLineWithTab("");
         output->writeLineWithTab("");
@@ -1699,10 +1716,15 @@ public:
 
     string GET_CODE() override {
         cout<<"block"<<endl;
+
+        string x("sub rsp, " + to_string(nodo->lenght));
+        LLVM.stack_adjust(nodo);
+        output->writeLineWithTab(x);
         cout<<SEQUENZE_OF_ISTRUCTION->size();
         for(auto x:*SEQUENZE_OF_ISTRUCTION) {
             x->GET_CODE();
         }
+
         return "";
     }
 };
@@ -1802,43 +1824,56 @@ public:
             if(it.operator*()->getCategory()==category_syntax_analyzer::_math_symbol) {
 
                 if (stack.empty()) {
-                    output->writeLineWithTab("pop rcx");
+                    output->writeLineWithTab("pop r10");
                     LLVM.temp_offset=LLVM.temp_offset-8;
                     element_in_stack--;
                 }else {
-                    output->writeLineWithTab("mov ecx , "+ stack.back()->GET_CODE());
+                    output->writeLineWithTab("mov r10d , "+ stack.back()->GET_CODE());
                     stack.pop_back();
                 }
 
 
                 if (stack.empty()) {
-                    output->writeLineWithTab("pop rax");
+                    output->writeLineWithTab("pop r11");
                     LLVM.temp_offset=LLVM.temp_offset-8;
                     element_in_stack--;
                 }else {
-                    output->writeLineWithTab("mov eax , "+ stack.back()->GET_CODE());
+                    output->writeLineWithTab("mov r11d , "+ stack.back()->GET_CODE());
                     stack.pop_back();
                 }
 
                 if(it.operator*()->getType()==syntax_analyzer::MUL_DIV) {
                     output->writeLineWithTab("xor rdx, rdx");
-                    output->writeLineWithTab(it.operator*()->GET_CODE() +" ecx");
+
+                    output->writeLineWithTab(it.operator*()->GET_CODE() +" r11d");
+                    output->writeLineWithTab("mov r10d ,eax,");
                 }else if (it.operator*()->getType()==syntax_analyzer::PLUS_MINUS) {
-                    output->writeLineWithTab(it.operator*()->GET_CODE() +" eax, ecx");
+                    output->writeLineWithTab(it.operator*()->GET_CODE() +"  r11d, r10d");
+                    output->writeLineWithTab("mov r10d ,r11d");
                 }
-                if(it!=prev(this->EXPRESSION.end())) {
-                    LLVM.temp_offset=LLVM.temp_offset+8;
-                    output->writeLineWithTab("push rax");
-
+                if(it!=this->EXPRESSION.end()-1) {
+                    output->writeLineWithTab("push r10");
+                    element_in_stack++;
                 }
 
-                element_in_stack++;
             }else {
-                stack.push_back(it.operator*());
+                if(it.operator*()->getType()==syntax_analyzer::CONSTANT) {
+                    stack.push_back(it.operator*());
+
+
+                }
+                else {
+
+                    output->writeLineWithTab("mov eax," + it.operator*()->GET_CODE());
+                    output->writeLineWithTab("push rax");
+                    LLVM.temp_offset=LLVM.temp_offset+8;
+                    element_in_stack++;
+                }
+
             }
 
         }
-
+        output->writeLineWithTab("mov eax,r10d");
         return "eax";
 
     }
@@ -2024,15 +2059,15 @@ public:
 
 class if_statment : public Entity {
     void add_to_symble_table() {
-        auto x=CORE_SYMBLETABLE->go_to_parent_node();
+
         CORE_SYMBLETABLE->insert_at_actual_node(
         CORE_SYMBLETABLE->plain_string_for_block,
             new SymbleTable_Row_Blocco(
                 CORE_SYMBLETABLE->actual_node,
-                x
+                this->BLOCK->get_NODE()
                 )
             );
-        this->allocazione=x;
+        this->allocazione=this->BLOCK->get_NODE();
     }
 public:
     short type = syntax_analyzer::IF_STATMENT;
@@ -2057,7 +2092,7 @@ public:
         int else_n = LLVM.if_index;
         LLVM.if_index++;
 
-        LLVM.stack_adjust(this->allocazione);
+
         output->writeLineWithTab("; IF STATMENT");
         output->writeLineWithTab(this->CONDITION->GET_CODE() + " ___jump_if_"+ to_string(ifn));
         output->writeLineWithTab("jmp ___jump_end_"+ to_string(else_n));
@@ -2065,6 +2100,7 @@ public:
         this->BLOCK->GET_CODE();
         output->writeLineWithTab("___jump_end_"+ to_string(else_n)+":");
         LLVM.remove_actual_node_function();
+        output->writeLineWithTab("add rsp, "+ to_string(this->BLOCK->get_NODE()->lenght));
 
         return "";
     }

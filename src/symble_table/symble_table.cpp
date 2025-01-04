@@ -53,6 +53,7 @@ public:
     virtual void print(string spaziatura){return;}
     virtual NODE* get_contesto() { return nullptr; }
     virtual NODE* get_contesto_var() { return nullptr; };
+
 };
 
 /**
@@ -67,15 +68,28 @@ public:
     NODE* up_layer; ///< Pointer to the parent node in the hierarchy.
     robin_hood::unordered_node_map<std::string, SymbleTable_Row*> map; ///< Map to store symbol table rows.
     SymbleTable_Row* return_type=nullptr; ///< Return type of the node.
+    bool is_funzione=false; ///< True if the node is a function, otherwise false.
+    string* name;
+
     /**
      * @brief Constructs a new NODE object.
      * @param up_layer Pointer to the parent node.
+     * @param isfunzione
      */
+    explicit NODE(NODE* up_layer, bool isfunzione) {
+        this->up_layer = up_layer;
+        this->map=robin_hood::unordered_node_map<std::string, SymbleTable_Row*>();
+        this->is_funzione=isfunzione;
+    }
+
     explicit NODE(NODE* up_layer) {
         this->up_layer = up_layer;
         this->map=robin_hood::unordered_node_map<std::string, SymbleTable_Row*>();
     }
 
+    string* get_name() {
+        return name;
+    }
     /**
      * @brief Gets the parent node.
      * @return Pointer to the parent node.
@@ -388,6 +402,12 @@ public:
      */
     NODE* add_node() {
         const auto temp = new NODE(this->actual_node);
+        this->actual_node = temp;
+        return temp;
+    }
+
+    NODE* add_node(bool isfunzione) {
+        const auto temp = new NODE(this->actual_node, isfunzione);
         this->actual_node = temp;
         return temp;
     }
