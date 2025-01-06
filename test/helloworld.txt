@@ -1,0 +1,11 @@
+
+method Start (int a, int b) : {
+    print : "hello world!!!";
+    return 0
+}
+
+
+
+
+
+
