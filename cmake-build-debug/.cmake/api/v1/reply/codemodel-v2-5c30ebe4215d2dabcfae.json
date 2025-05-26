@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/cmake-build-debug",
-		"source" : "C:/Users/basil/OneDrive/Desktop/starfish_programming_language"
+		"build" : "C:/Users/basil/CLionProjects/CUCUMBER/cmake-build-debug",
+		"source" : "C:/Users/basil/CLionProjects/CUCUMBER"
 	},
 	"version" : 
 	{

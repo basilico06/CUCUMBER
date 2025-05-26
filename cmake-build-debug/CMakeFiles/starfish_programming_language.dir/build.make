@@ -52,10 +52,10 @@ RM = "D:\CLion 2024.2.3\bin\cmake\win\x64\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\basil\OneDrive\Desktop\starfish_programming_language
+CMAKE_SOURCE_DIR = C:\Users\basil\CLionProjects\CUCUMBER
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/starfish_programming_language.dir/depend.make
@@ -69,60 +69,60 @@ include CMakeFiles/starfish_programming_language.dir/progress.make
 include CMakeFiles/starfish_programming_language.dir/flags.make
 
 CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj: CMakeFiles/starfish_programming_language.dir/flags.make
-CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj: C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/syntax_analyzer/syntax_analyzer.cpp
+CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj: C:/Users/basil/CLionProjects/CUCUMBER/src/syntax_analyzer/syntax_analyzer.cpp
 CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj: CMakeFiles/starfish_programming_language.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.obj -c C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\syntax_analyzer\syntax_analyzer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj"
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.obj -c C:\Users\basil\CLionProjects\CUCUMBER\src\syntax_analyzer\syntax_analyzer.cpp
 
 CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.i"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\syntax_analyzer\syntax_analyzer.cpp > CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.i
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\CLionProjects\CUCUMBER\src\syntax_analyzer\syntax_analyzer.cpp > CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.i
 
 CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.s"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\syntax_analyzer\syntax_analyzer.cpp -o CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.s
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\CLionProjects\CUCUMBER\src\syntax_analyzer\syntax_analyzer.cpp -o CMakeFiles\starfish_programming_language.dir\src\syntax_analyzer\syntax_analyzer.cpp.s
 
 CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj: CMakeFiles/starfish_programming_language.dir/flags.make
-CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj: C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/parser/parser.cpp
+CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj: C:/Users/basil/CLionProjects/CUCUMBER/src/parser/parser.cpp
 CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj: CMakeFiles/starfish_programming_language.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.obj -c C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\parser\parser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj"
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.obj -c C:\Users\basil\CLionProjects\CUCUMBER\src\parser\parser.cpp
 
 CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.i"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\parser\parser.cpp > CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.i
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\CLionProjects\CUCUMBER\src\parser\parser.cpp > CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.i
 
 CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.s"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\parser\parser.cpp -o CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.s
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\CLionProjects\CUCUMBER\src\parser\parser.cpp -o CMakeFiles\starfish_programming_language.dir\src\parser\parser.cpp.s
 
 CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj: CMakeFiles/starfish_programming_language.dir/flags.make
-CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj: C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/codegen/codegen.cpp
+CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj: C:/Users/basil/CLionProjects/CUCUMBER/src/codegen/codegen.cpp
 CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj: CMakeFiles/starfish_programming_language.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.obj -c C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\codegen\codegen.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj"
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.obj -c C:\Users\basil\CLionProjects\CUCUMBER\src\codegen\codegen.cpp
 
 CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.i"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\codegen\codegen.cpp > CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.i
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\CLionProjects\CUCUMBER\src\codegen\codegen.cpp > CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.i
 
 CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.s"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\codegen\codegen.cpp -o CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.s
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\CLionProjects\CUCUMBER\src\codegen\codegen.cpp -o CMakeFiles\starfish_programming_language.dir\src\codegen\codegen.cpp.s
 
 CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj: CMakeFiles/starfish_programming_language.dir/flags.make
-CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj: C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/init/init.cpp
+CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj: C:/Users/basil/CLionProjects/CUCUMBER/src/init/init.cpp
 CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj: CMakeFiles/starfish_programming_language.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.obj -c C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\init\init.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj"
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj -MF CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.obj.d -o CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.obj -c C:\Users\basil\CLionProjects\CUCUMBER\src\init\init.cpp
 
 CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.i"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\init\init.cpp > CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.i
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\basil\CLionProjects\CUCUMBER\src\init\init.cpp > CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.i
 
 CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.s"
-	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\OneDrive\Desktop\starfish_programming_language\src\init\init.cpp -o CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.s
+	"D:\CLion 2024.2.3\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\basil\CLionProjects\CUCUMBER\src\init\init.cpp -o CMakeFiles\starfish_programming_language.dir\src\init\init.cpp.s
 
 # Object files for target starfish_programming_language
 starfish_programming_language_OBJECTS = \
@@ -142,7 +142,7 @@ starfish_programming_language.exe: CMakeFiles/starfish_programming_language.dir/
 starfish_programming_language.exe: CMakeFiles/starfish_programming_language.dir/linkLibs.rsp
 starfish_programming_language.exe: CMakeFiles/starfish_programming_language.dir/objects1.rsp
 starfish_programming_language.exe: CMakeFiles/starfish_programming_language.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable starfish_programming_language.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable starfish_programming_language.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\starfish_programming_language.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -154,6 +154,6 @@ CMakeFiles/starfish_programming_language.dir/clean:
 .PHONY : CMakeFiles/starfish_programming_language.dir/clean
 
 CMakeFiles/starfish_programming_language.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\basil\OneDrive\Desktop\starfish_programming_language C:\Users\basil\OneDrive\Desktop\starfish_programming_language C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug C:\Users\basil\OneDrive\Desktop\starfish_programming_language\cmake-build-debug\CMakeFiles\starfish_programming_language.dir\DependInfo.cmake "--color=$(COLOR)"
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" C:\Users\basil\CLionProjects\CUCUMBER C:\Users\basil\CLionProjects\CUCUMBER C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug C:\Users\basil\CLionProjects\CUCUMBER\cmake-build-debug\CMakeFiles\starfish_programming_language.dir\DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/starfish_programming_language.dir/depend
 

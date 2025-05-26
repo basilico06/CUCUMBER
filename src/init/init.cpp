@@ -39,7 +39,7 @@ void file_elaborator(string filename) {
 
 /**
  * Measure-Command { Start-Process "C:\Users\basil\OneDrive\Desktop\starfish_programming_language\programma.exe" | Out-Host }
- * comando per misuarare le prestazioni |viva hitler|
+ *
 */
 int main(int argc, char *argv[]) {
 

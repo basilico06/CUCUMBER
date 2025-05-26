@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/basil/OneDrive/Desktop/starfish_programming_language/cmake-build-debug"
+			"value" : "c:/Users/basil/CLionProjects/CUCUMBER/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -559,7 +559,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/cmake-build-debug/CMakeFiles/pkgRedirects"
+			"value" : "C:/Users/basil/CLionProjects/CUCUMBER/cmake-build-debug/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -631,7 +631,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/basil/OneDrive/Desktop/starfish_programming_language"
+			"value" : "C:/Users/basil/CLionProjects/CUCUMBER"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1279,7 +1279,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/cmake-build-debug"
+			"value" : "C:/Users/basil/CLionProjects/CUCUMBER/cmake-build-debug"
 		},
 		{
 			"name" : "starfish_programming_language_IS_TOP_LEVEL",
@@ -1303,7 +1303,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/basil/OneDrive/Desktop/starfish_programming_language"
+			"value" : "C:/Users/basil/CLionProjects/CUCUMBER"
 		}
 	],
 	"kind" : "cache",

@@ -8,10 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/codegen/codegen.cpp" "CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj.d"
-  "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/init/init.cpp" "CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj.d"
-  "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/parser/parser.cpp" "CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj.d"
-  "C:/Users/basil/OneDrive/Desktop/starfish_programming_language/src/syntax_analyzer/syntax_analyzer.cpp" "CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj.d"
+  "C:/Users/basil/CLionProjects/CUCUMBER/src/codegen/codegen.cpp" "CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/codegen/codegen.cpp.obj.d"
+  "C:/Users/basil/CLionProjects/CUCUMBER/src/init/init.cpp" "CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/init/init.cpp.obj.d"
+  "C:/Users/basil/CLionProjects/CUCUMBER/src/parser/parser.cpp" "CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/parser/parser.cpp.obj.d"
+  "C:/Users/basil/CLionProjects/CUCUMBER/src/syntax_analyzer/syntax_analyzer.cpp" "CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj" "gcc" "CMakeFiles/starfish_programming_language.dir/src/syntax_analyzer/syntax_analyzer.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
