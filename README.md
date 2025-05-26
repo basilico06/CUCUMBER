@@ -61,7 +61,6 @@ method Start (int a, int b) : {
 
 ### Autore
 - PIETRO BASILICO iiss E.Mattei 5°A 24-25
--  commissionato per sfida da prof. Paolo Lillo
 
 ### Licenza
 fate quello che volete tanto è un progetto scolastico e non ha nessun valore commerciale comunque
