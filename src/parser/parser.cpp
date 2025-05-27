@@ -28,8 +28,14 @@ void parse_2_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         throw std::runtime_error("Not enough elements for parse_2_entity");
     }
 
+    cout <<  "----------------------------------------------------- chiamata con 2 "<< endl;
+    cout << std::distance(start, BUFFER->end()) << endl;
+
     auto first = *safe_next(start, *BUFFER);
     auto second = *safe_next(start, *BUFFER, 2);
+
+    cout << first->getType() << endl;
+    cout << second->getType() << endl;
 
     if(first->getType()==syntax_analyzer::RETURN_DECLARATION and second->getCategory()==category_syntax_analyzer::_real) {
         Entity *entity = new return_statement(second);
@@ -58,6 +64,14 @@ void parse_2_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
 
         }
         //todo implementare errore : classe non presente al toplayer
+    }
+
+    if (first->getType()== syntax_analyzer::LEFT_PAREN and second->getType()==syntax_analyzer::RIGHT_PAREN) {
+        Entity* entity = new empty_paramether_list();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(entity);
+        return;
     }
 
 
@@ -252,6 +266,17 @@ void parse_3_entity(list<Entity *>::iterator start, list<Entity *> *BUFFER) {
         BUFFER->push_back(ENTITY);
         return;
     }
+
+    if (first->getType()==syntax_analyzer::FUNCTION_DEC and second->getType()==syntax_analyzer::VAR and third->getType()==syntax_analyzer::EMPTY_PARAMETHER_LIST){
+        Entity* ENTITY = new function_declaration(second, third);
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->pop_back();
+        BUFFER->push_back(ENTITY);
+        return;
+    }
+
+
 
     if (first->getType()==syntax_analyzer::FUNCTION_DECLARATION and second->getType()==syntax_analyzer::COLON and third->getType()==syntax_analyzer::BLOCK) {
         first->add(third);

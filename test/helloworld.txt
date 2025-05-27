@@ -1,5 +1,5 @@
 
-method Start (int a, int b) : {
+method Start (int a) : {
     print : "hello world!!!";
     return 0
 }

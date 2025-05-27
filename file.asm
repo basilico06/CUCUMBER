@@ -10,7 +10,7 @@ extern WriteFile
 extern ExitProcess
 extern GetProcessHeap
 extern HeapAlloc
-extern Start_262262
+extern Start_
 
 
 section .data
@@ -201,7 +201,7 @@ Start:
 
 
 	
-	call Start_262262
+	call Start_
     
 
 	;add rsp, 16

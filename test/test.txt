@@ -1,39 +1,9 @@
-method  Fibonacci (int x, int y) : {
-    semmai (x <= 1) {
-        0+0;
-        return x
-    };
-    int res = Fibonacci(x-1, y) + Fibonacci(x-2, y);
-    return res
-};
 
-method Start (int a, int b) : {
-    print : Fibonacci(0, 1) ;
-    print : " ";
-    print : Fibonacci(1, 1) ;
-    print : " ";
-    print : Fibonacci(2, 1) ;
-    print : " ";
-    print : Fibonacci(3, 1) ;
-    print : " ";
-    print : Fibonacci(4, 1) ;
-    print : " ";
-    print : Fibonacci(5, 1) ;
-    print : " ";
-    print : Fibonacci(6, 1) ;
-    print : " ";
-    print : Fibonacci(7, 1) ;
-    print : " ";
-    print : Fibonacci(8, 1) ;
-    print : " ";
-    print : Fibonacci(9, 1) ;
-    print : " ";
-    print : Fibonacci(10, 1) ;
+
+method Start () : {
+    print : "hello world!!!";
+    string x = "ca";
+    print : x ;
     return 0
+
 }
-
-
-
-
-
-

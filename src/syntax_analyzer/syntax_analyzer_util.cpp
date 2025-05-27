@@ -100,7 +100,7 @@ class syntax_analyzer {
         static constexpr short END_FILE=1024;
 
         static constexpr short SCRIPT=1025;
-
+        static constexpr short EMPTY_PARAMETHER_LIST=1026;
 };
 
 #endif //syntax_analyzer_util_hpp

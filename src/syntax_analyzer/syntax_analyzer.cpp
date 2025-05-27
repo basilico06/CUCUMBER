@@ -1263,12 +1263,12 @@ void add_to_symble_table() {
             CORE_SYMBLETABLE->actual_node->allocate_position(
                 get_size_from_tipo_variabile(tipo_variabile))
             );
+
     CORE_SYMBLETABLE->insert_at_actual_node(
         this->right->get_name(),
         oggetto_puntato
         );
-
-}
+    }
 
 
 public:
@@ -1542,20 +1542,35 @@ public:
     }
 };
 
+class empty_paramether_list : public Entity {
+public:
+    short type;
+
+    short getCategory() {
+        return category_syntax_analyzer::_allocation;
+    }
+
+    deque<Entity *> *PARAMETHER;
+
+    short getType() const { return type; }
+
+    string* get_string_from_list() override {
+        string* temp=new string();
+        return temp;
+    }
+
+    empty_paramether_list() {
+        this->type = syntax_analyzer::EMPTY_PARAMETHER_LIST;
+    }
+
+};
+
 class formal_paramether_list : public Entity {
 public:
     short type;
 
     short getCategory() {
-        if (this->getType() > 800 and this->getType() < 1000) {
-            return category_syntax_analyzer::_allocation;
-        } else if (this->type >= 500 and this->type < 525) {
-            return category_syntax_analyzer::_real;
-        } else if (this->type >= 451 and this->type < 455) {
-            return category_syntax_analyzer::_math_symbol;
-        } else {
-            return category_syntax_analyzer::_default;
-        }
+        return category_syntax_analyzer::_allocation;
     }
 
     deque<Entity *> *PARAMETHER;
@@ -1968,8 +1983,10 @@ public:
 
         short x;
         if(temp== ENUM_TIPO_VARIABILE::UNDEFINED) {
+            cout<< "test3";
             x=get_size_from_tipo_variabile(LLVM.get_tipo_variabile(LEFT->get_name()));
         }else {
+            cout<<" test1";
             x=get_size_from_tipo_variabile(temp);
         }
         string* reg = get_register_from_size(x);
