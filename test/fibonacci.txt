@@ -7,7 +7,7 @@ method  Fibonacci (int x, int y) : {
     return res
 };
 
-method Start (int a, int b) : {
+method Start () : {
     print : Fibonacci(0, 1) ;
     print : " ";
     print : Fibonacci(1, 1) ;
